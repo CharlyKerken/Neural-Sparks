@@ -144,6 +144,90 @@
             color: white;
         }
 
+        /* Category selector */
+        .category-bar { display: flex; gap: 0.5rem; width: 100%; margin-bottom: 1rem; flex-wrap: wrap; }
+        .category-btn {
+            background: #0f172a; color: #e2e8f0; border: 1px solid #334155;
+            padding: 0.55rem 1.1rem; border-radius: 9999px; cursor: pointer;
+            font-size: 0.9rem; font-weight: 600; transition: all 0.2s;
+        }
+        .category-btn:hover:not(.active):not([disabled]) { background: #334155; }
+        .category-btn.active { background: #38bdf8; color: #0f172a; border-color: #38bdf8; }
+        .category-btn[disabled] { opacity: 0.4; cursor: not-allowed; }
+        .cat-count { font-size: 0.7rem; opacity: 0.7; margin-left: 0.25rem; }
+
+        /* Facet bar */
+        .facet-bar { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; width: 100%; }
+        .facet-dropdown { position: relative; }
+        .facet-toggle {
+            background: #334155; color: #e2e8f0; border: 1px solid #475569;
+            padding: 0.4rem 0.8rem; border-radius: 9999px; cursor: pointer;
+            font-size: 0.8rem; font-weight: 500; display: inline-flex; align-items: center; gap: 0.35rem;
+        }
+        .facet-toggle:hover { background: #475569; }
+        .facet-dropdown.open .facet-toggle { background: #475569; border-color: #38bdf8; }
+        .facet-count { background: #38bdf8; color: #0f172a; border-radius: 9999px; padding: 0 0.4rem; font-size: 0.7rem; font-weight: 700; }
+        .caret { font-size: 0.65rem; opacity: 0.7; }
+        .facet-menu {
+            display: none; position: absolute; top: calc(100% + 0.35rem); left: 0; z-index: 1100;
+            background: #1e293b; border: 1px solid #334155; border-radius: 0.6rem; padding: 0.4rem;
+            min-width: 210px; max-height: 280px; overflow-y: auto; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.6);
+        }
+        .facet-dropdown.open .facet-menu { display: block; }
+        .facet-option {
+            display: flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0.5rem;
+            border-radius: 0.4rem; font-size: 0.8rem; color: #e2e8f0; cursor: pointer;
+        }
+        .facet-option:hover { background: #334155; }
+        .facet-option input { accent-color: #38bdf8; cursor: pointer; }
+        .more-filters-btn {
+            background: transparent; color: #38bdf8; border: 1px dashed #475569;
+            padding: 0.4rem 0.8rem; border-radius: 9999px; cursor: pointer; font-size: 0.8rem; font-weight: 600;
+        }
+        .more-filters-btn:hover { background: #334155; }
+        .more-facets { display: none; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+        .more-facets.open { display: flex; }
+        .search-input {
+            margin-left: auto; background: #0f172a; color: #e2e8f0; border: 1px solid #334155;
+            padding: 0.45rem 0.9rem; border-radius: 9999px; font-size: 0.8rem; min-width: 220px;
+        }
+        .search-input:focus { outline: none; border-color: #38bdf8; }
+        .search-input::placeholder { color: #64748b; }
+
+        /* Active filter chips */
+        .active-chips { display: none; flex-wrap: wrap; gap: 0.5rem; align-items: center; width: 100%; margin-top: 1rem; }
+        .chip {
+            display: inline-flex; align-items: center; gap: 0.4rem; background: #0f172a; color: #e2e8f0;
+            border: 1px solid #38bdf8; padding: 0.3rem 0.4rem 0.3rem 0.75rem; border-radius: 9999px; font-size: 0.78rem;
+        }
+        .chip-facet { color: #38bdf8; font-weight: 600; }
+        .chip-remove {
+            background: #334155; color: #e2e8f0; border: none; width: 1.1rem; height: 1.1rem;
+            border-radius: 50%; cursor: pointer; font-size: 0.8rem; line-height: 1;
+            display: flex; align-items: center; justify-content: center; padding: 0;
+        }
+        .chip-remove:hover { background: #ef4444; color: #fff; }
+        .clear-all-btn {
+            background: transparent; border: 1px solid #ef4444; color: #ef4444;
+            padding: 0.3rem 0.9rem; border-radius: 9999px; cursor: pointer; font-size: 0.78rem; font-weight: 600;
+        }
+        .clear-all-btn:hover { background: #ef4444; color: #fff; }
+
+        /* Modal grouped chips */
+        .facet-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; margin-bottom: 0.5rem; }
+        .facet-row-label {
+            color: #94a3b8; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em;
+            min-width: 6.5rem; font-weight: 600;
+        }
+        .modal-chip {
+            background: #0f172a; color: #38bdf8; border: 1px solid #334155;
+            padding: 0.25rem 0.7rem; border-radius: 9999px; font-size: 0.75rem; cursor: pointer; transition: all 0.15s;
+        }
+        .modal-chip:hover { background: #38bdf8; color: #0f172a; border-color: #38bdf8; }
+
+        /* Dimmed in-category non-match (mobile list) */
+        .lab-card.dimmed { opacity: 0.35; }
+
         /* Stats Counter */
         .stats {
             display: flex;
@@ -516,18 +600,9 @@
 
     <div class="filters">
         <div class="filter-container">
-            <span class="filter-label">Filter by Focus:</span>
-            <button class="filter-btn active" data-filter="all">All Labs</button>
-            <button class="filter-btn" data-filter="BCI">Brain-Computer Interface</button>
-            <button class="filter-btn" data-filter="Biohybrid">Biohybrid Interfaces</button>
-            <button class="filter-btn" data-filter="Neurostimulation">Neurostimulation</button>
-            <button class="filter-btn" data-filter="Wireless">Wireless Implants</button>
-            <button class="filter-btn" data-filter="Materials">Advanced Materials</button>
-            <button class="filter-btn" data-filter="Clinical">Clinical Trials</button>
-            <button class="filter-btn" data-filter="Researcher">Researchers</button>
-            <button class="filter-btn" data-filter="Device">Devices</button>
-
-            <button class="filter-btn clear" onclick="resetFilters()">Clear Filters</button>
+            <div id="categoryBar" class="category-bar"></div>
+            <div id="facetBar" class="facet-bar"></div>
+            <div id="activeChips" class="active-chips"></div>
         </div>
     </div>
 
@@ -2362,16 +2437,31 @@
             return `<div class="avatar ${sizeClass}">${getInitials(researcher.name)}</div>`;
         }
 
-        function renderTags(focus) {
-            return focus.map(tag => `<span class="tag">${tag}</span>`).join('');
+        function escapeHtml(str) {
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         }
 
-        // Initialize markers
+        // Flatten an entry's tag values (single string or array) into one list.
+        function flatTagValues(researcher) {
+            const out = [];
+            Object.values(researcher.tags).forEach(v => {
+                if (Array.isArray(v)) out.push(...v);
+                else if (v) out.push(v);
+            });
+            return out;
+        }
+
+        function renderTagChips(values) {
+            return values.map(v => `<span class="tag">${escapeHtml(v)}</span>`).join('');
+        }
+
+        // Initialize markers (created but NOT added to the map — applyFilters()
+        // controls layer membership so non-active categories disappear entirely).
         function initMarkers() {
             researchers.forEach(researcher => {
                 const marker = L.marker(researcher.coords, {
                     icon: createCustomIcon()
-                }).addTo(map);
+                });
 
                 const popupContent = `
                     <div class="popup-header">
@@ -2385,7 +2475,7 @@
                     </div>
                     <div class="popup-body">
                         <div class="popup-topic">${researcher.topic}</div>
-                        <div class="popup-tags">${renderTags(researcher.focus)}</div>
+                        <div class="popup-tags">${renderTagChips(flatTagValues(researcher))}</div>
                         <a href="#" class="popup-link" onclick="openModal(${researcher.id}); return false;">View Full Details</a>
                     </div>
                 `;
@@ -2402,7 +2492,6 @@
                 const card = document.createElement('div');
                 card.className = 'lab-card';
                 card.dataset.id = researcher.id;
-                card.dataset.focus = researcher.focus.join(' ');
                 card.innerHTML = `
                     <div class="popup-header-row" style="margin-bottom: 0.75rem;">
                         ${renderAvatar(researcher, 'avatar--sm')}
@@ -2411,7 +2500,7 @@
                             <div class="location">📍 ${researcher.location} • ${researcher.institution}</div>
                         </div>
                     </div>
-                    <div class="popup-tags">${renderTags(researcher.focus)}</div>
+                    <div class="popup-tags">${renderTagChips(flatTagValues(researcher))}</div>
                     <p style="margin-top: 0.5rem; color: #94a3b8; font-size: 0.9rem;">${researcher.topic}</p>
                 `;
                 card.onclick = () => openModal(researcher.id);
@@ -2419,42 +2508,268 @@
             });
         }
 
-        // Filter functionality
-        document.querySelectorAll('.filter-btn[data-filter]').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                // Update active button
-                document.querySelectorAll('.filter-btn[data-filter]').forEach(b => b.classList.remove('active'));
-                e.target.classList.add('active');
-                
-                const filter = e.target.dataset.filter;
-                activeFilter = filter;
-                applyFilter(filter);
+        // ---- Category-scoped faceted filtering ----
+        const CATEGORY_ORDER = ['Implant', 'Researcher', 'Conference', 'Funding'];
+        // First three (or fewer) facets shown by default; the rest live behind "More filters".
+        const DEFAULT_VISIBLE_FACETS = {
+            Implant:    ['invasiveness', 'stage', 'target'],
+            Researcher: ['affiliation', 'target', 'topics'],
+            Conference: ['scope', 'focus'],
+            Funding:    ['type', 'focus']
+        };
+        let activeCategory = 'Implant';
+        let activeFilters = {};   // facetKey -> Set of selected values (reset on category switch)
+        let searchQuery = '';
+        let moreFiltersOpen = false;
+
+        function categoryEntries(cat) {
+            return researchers.filter(r => r.category === cat);
+        }
+
+        // Controlled-vocabulary values that actually occur in this category
+        // (used to hide empty facets / empty options).
+        function facetValuesPresent(cat, facetKey) {
+            const present = new Set();
+            categoryEntries(cat).forEach(r => {
+                const v = r.tags[facetKey];
+                if (Array.isArray(v)) v.forEach(x => present.add(x));
+                else if (v) present.add(v);
             });
-        });
+            return present;
+        }
 
-        function applyFilter(filter) {
-            researchers.forEach(researcher => {
-                const marker = markers[researcher.id];
-                const card = document.querySelector(`.lab-card[data-id="${researcher.id}"]`);
-                const matches = filter === 'all' || researcher.focus.includes(filter);
+        function facetOrder(cat) {
+            const all = Object.keys(SCHEMA[cat].facets);
+            const vis = (DEFAULT_VISIBLE_FACETS[cat] || all.slice(0, 3)).filter(f => all.includes(f));
+            const rest = all.filter(f => !vis.includes(f));
+            return { vis, rest };
+        }
 
-                if (matches) {
+        function renderCategoryBar() {
+            const bar = document.getElementById('categoryBar');
+            bar.innerHTML = CATEGORY_ORDER.map(cat => {
+                const n = categoryEntries(cat).length;
+                const active = cat === activeCategory ? ' active' : '';
+                return `<button class="category-btn${active}" data-category="${cat}"${n === 0 ? ' disabled' : ''}>${SCHEMA[cat].label}<span class="cat-count">${n}</span></button>`;
+            }).join('');
+            bar.querySelectorAll('.category-btn[data-category]').forEach(btn => {
+                btn.addEventListener('click', () => { if (!btn.disabled) setCategory(btn.dataset.category); });
+            });
+        }
+
+        function setCategory(cat) {
+            if (cat === activeCategory) return;
+            activeCategory = cat;
+            activeFilters = {};
+            searchQuery = '';
+            moreFiltersOpen = false;
+            renderCategoryBar();
+            renderFacetBar();
+            renderActiveChips();
+            applyFilters();
+        }
+
+        function facetDropdownHtml(facetKey) {
+            const facet = SCHEMA[activeCategory].facets[facetKey];
+            const present = facetValuesPresent(activeCategory, facetKey);
+            const values = facet.values.filter(v => present.has(v));
+            if (!values.length) return '';   // hide facets with zero entries
+            const selected = activeFilters[facetKey] || new Set();
+            const badge = selected.size ? `<span class="facet-count">${selected.size}</span>` : '';
+            const options = values.map(v => {
+                const checked = selected.has(v) ? ' checked' : '';
+                return `<label class="facet-option"><input type="checkbox" data-facet="${escapeAttr(facetKey)}" value="${escapeAttr(v)}"${checked}><span>${escapeHtml(v)}</span></label>`;
+            }).join('');
+            return `<div class="facet-dropdown" data-facet-key="${escapeAttr(facetKey)}">
+                <button type="button" class="facet-toggle">${escapeHtml(facet.label)} ${badge}<span class="caret">▾</span></button>
+                <div class="facet-menu">${options}</div>
+            </div>`;
+        }
+
+        function renderFacetBar() {
+            const bar = document.getElementById('facetBar');
+            const { vis, rest } = facetOrder(activeCategory);
+            const visHtml = vis.map(facetDropdownHtml).filter(Boolean);
+            const restHtml = rest.map(facetDropdownHtml).filter(Boolean);
+
+            let html = visHtml.join('');
+            if (restHtml.length) {
+                html += `<button type="button" id="moreFiltersBtn" class="more-filters-btn">${moreFiltersOpen ? '− Fewer filters' : '+ More filters'}</button>`;
+                html += `<div id="moreFacets" class="more-facets${moreFiltersOpen ? ' open' : ''}">${restHtml.join('')}</div>`;
+            }
+            html += `<input type="search" id="searchInput" class="search-input" placeholder="Search ${escapeAttr(SCHEMA[activeCategory].label.toLowerCase())}…" value="${escapeAttr(searchQuery)}">`;
+            bar.innerHTML = html;
+
+            bar.querySelectorAll('.facet-dropdown').forEach(dd => {
+                dd.querySelector('.facet-toggle').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const wasOpen = dd.classList.contains('open');
+                    document.querySelectorAll('.facet-dropdown.open').forEach(o => o.classList.remove('open'));
+                    if (!wasOpen) dd.classList.add('open');
+                });
+            });
+            bar.querySelectorAll('input[type="checkbox"][data-facet]').forEach(cb => {
+                cb.addEventListener('change', () => toggleFacetValue(cb.dataset.facet, cb.value, cb.checked));
+            });
+            const moreBtn = document.getElementById('moreFiltersBtn');
+            if (moreBtn) moreBtn.addEventListener('click', () => {
+                moreFiltersOpen = !moreFiltersOpen;
+                renderFacetBar();
+            });
+            const search = document.getElementById('searchInput');
+            if (search) search.addEventListener('input', () => {
+                searchQuery = search.value;
+                renderActiveChips();
+                applyFilters();
+            });
+        }
+
+        function updateFacetCount(facetKey) {
+            const dd = document.querySelector(`.facet-dropdown[data-facet-key="${facetKey}"]`);
+            if (!dd) return;
+            const facet = SCHEMA[activeCategory].facets[facetKey];
+            const sel = activeFilters[facetKey];
+            const badge = sel && sel.size ? `<span class="facet-count">${sel.size}</span>` : '';
+            dd.querySelector('.facet-toggle').innerHTML = `${escapeHtml(facet.label)} ${badge}<span class="caret">▾</span>`;
+        }
+
+        function toggleFacetValue(facetKey, value, on) {
+            if (!activeFilters[facetKey]) activeFilters[facetKey] = new Set();
+            if (on) activeFilters[facetKey].add(value);
+            else {
+                activeFilters[facetKey].delete(value);
+                if (activeFilters[facetKey].size === 0) delete activeFilters[facetKey];
+            }
+            updateFacetCount(facetKey);
+            renderActiveChips();
+            applyFilters();
+        }
+
+        function renderActiveChips() {
+            const wrap = document.getElementById('activeChips');
+            const chips = [];
+            Object.keys(activeFilters).forEach(fk => {
+                const facet = SCHEMA[activeCategory].facets[fk];
+                if (!facet) return;
+                activeFilters[fk].forEach(v => {
+                    chips.push(`<span class="chip"><span class="chip-facet">${escapeHtml(facet.label)}:</span> ${escapeHtml(v)}<button class="chip-remove" data-facet="${escapeAttr(fk)}" data-value="${escapeAttr(v)}" aria-label="Remove filter">×</button></span>`);
+                });
+            });
+            if (searchQuery.trim()) {
+                chips.push(`<span class="chip"><span class="chip-facet">Search:</span> “${escapeHtml(searchQuery.trim())}”<button class="chip-remove" data-search="1" aria-label="Clear search">×</button></span>`);
+            }
+            if (!chips.length) { wrap.innerHTML = ''; wrap.style.display = 'none'; return; }
+            wrap.style.display = 'flex';
+            wrap.innerHTML = chips.join('') + `<button id="clearAllBtn" class="clear-all-btn">Clear all</button>`;
+            wrap.querySelectorAll('.chip-remove').forEach(b => {
+                b.addEventListener('click', () => {
+                    if (b.dataset.search) {
+                        searchQuery = '';
+                        const si = document.getElementById('searchInput');
+                        if (si) si.value = '';
+                        renderActiveChips();
+                        applyFilters();
+                    } else {
+                        const fk = b.dataset.facet;
+                        if (activeFilters[fk]) {
+                            activeFilters[fk].delete(b.dataset.value);
+                            if (activeFilters[fk].size === 0) delete activeFilters[fk];
+                        }
+                        renderFacetBar();
+                        renderActiveChips();
+                        applyFilters();
+                    }
+                });
+            });
+            document.getElementById('clearAllBtn').addEventListener('click', clearAllFilters);
+        }
+
+        function clearAllFilters() {
+            activeFilters = {};
+            searchQuery = '';
+            moreFiltersOpen = false;
+            renderFacetBar();
+            renderActiveChips();
+            applyFilters();
+        }
+
+        // AND across facets, OR within a facet; plus free-text search over
+        // name, institution and all tag values within the active category.
+        function entryMatches(r) {
+            for (const fk of Object.keys(activeFilters)) {
+                const sel = activeFilters[fk];
+                if (!sel || !sel.size) continue;
+                const tv = r.tags[fk];
+                const vals = Array.isArray(tv) ? tv : (tv ? [tv] : []);
+                if (!vals.some(v => sel.has(v))) return false;
+            }
+            const q = searchQuery.trim().toLowerCase();
+            if (q) {
+                const hay = [r.name, r.institution, ...flatTagValues(r)].join(' ').toLowerCase();
+                if (!hay.includes(q)) return false;
+            }
+            return true;
+        }
+
+        function applyFilters() {
+            researchers.forEach(r => {
+                const marker = markers[r.id];
+                const card = document.querySelector(`.lab-card[data-id="${r.id}"]`);
+                if (r.category !== activeCategory) {
+                    if (map.hasLayer(marker)) map.removeLayer(marker);
+                    if (card) { card.classList.add('hidden'); card.classList.remove('dimmed'); }
+                    return;
+                }
+                if (!map.hasLayer(marker)) marker.addTo(map);
+                if (entryMatches(r)) {
                     marker.setOpacity(1);
-                    marker._icon.classList.remove('filtered-out');
-                    if (card) card.classList.remove('hidden');
+                    if (marker._icon) marker._icon.classList.remove('filtered-out');
+                    if (card) { card.classList.remove('hidden'); card.classList.remove('dimmed'); }
                 } else {
-                    marker.setOpacity(0.2);
-                    marker._icon.classList.add('filtered-out');
-                    if (card) card.classList.add('hidden');
+                    marker.setOpacity(0.25);
+                    if (marker._icon) marker._icon.classList.add('filtered-out');
+                    if (card) { card.classList.remove('hidden'); card.classList.add('dimmed'); }
                 }
             });
+            repositionMarkers();
         }
 
-        function resetFilters() {
-            document.querySelectorAll('.filter-btn[data-filter]').forEach(b => b.classList.remove('active'));
-            document.querySelector('[data-filter="all"]').classList.add('active');
-            applyFilter('all');
+        // Apply exactly one filter (used by clickable chips in the modal).
+        function applySingleFilter(cat, facetKey, value) {
+            closeModal();
+            activeCategory = cat;
+            activeFilters = {};
+            activeFilters[facetKey] = new Set([value]);
+            searchQuery = '';
+            moreFiltersOpen = false;
+            renderCategoryBar();
+            renderFacetBar();
+            renderActiveChips();
+            applyFilters();
         }
+
+        // Grouped, clickable facet chips for the detail modal.
+        function renderModalFacets(r) {
+            const facets = SCHEMA[r.category] && SCHEMA[r.category].facets;
+            if (!facets) return '';
+            const rows = Object.keys(facets).map(fk => {
+                const tv = r.tags[fk];
+                const vals = Array.isArray(tv) ? tv : (tv ? [tv] : []);
+                if (!vals.length) return '';
+                const chips = vals.map(v =>
+                    `<button type="button" class="modal-chip" data-cat="${escapeAttr(r.category)}" data-facet="${escapeAttr(fk)}" data-value="${escapeAttr(v)}">${escapeHtml(v)}</button>`
+                ).join('');
+                return `<div class="facet-row"><span class="facet-row-label">${escapeHtml(facets[fk].label)}</span>${chips}</div>`;
+            }).filter(Boolean).join('');
+            return rows || '<p style="color:#64748b;">No classification tags.</p>';
+        }
+
+        // Close any open facet dropdown when clicking elsewhere.
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.facet-dropdown')) {
+                document.querySelectorAll('.facet-dropdown.open').forEach(o => o.classList.remove('open'));
+            }
+        });
 
         // Modal functionality
         function openModal(researcherId) {
@@ -2519,8 +2834,8 @@
                 </div>
                 <div class="modal-body">
                     <div class="modal-section">
-                        <h4>Research Focus</h4>
-                        <div class="popup-tags" style="margin-top: 0.5rem;">${renderTags(researcher.focus)}</div>
+                        <h4>Classification</h4>
+                        <div style="margin-top: 0.5rem;">${renderModalFacets(researcher)}</div>
                     </div>
 
                     <div class="modal-section">
@@ -2538,6 +2853,12 @@
                     ${appearancesSection}
                 </div>
             `;
+
+            content.querySelectorAll('.modal-chip').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    applySingleFilter(btn.dataset.cat, btn.dataset.facet, btn.dataset.value);
+                });
+            });
 
             modal.classList.add('active');
         }
@@ -2558,8 +2879,11 @@
 
         // Initialize everything
         initMarkers();
-        repositionMarkers();
         initResearcherList();
+        renderCategoryBar();
+        renderFacetBar();
+        renderActiveChips();
+        applyFilters();
     </script>
 </body>
 </html>
