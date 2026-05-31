@@ -181,10 +181,10 @@
             min-width: 6.5rem; font-weight: 600;
         }
         .modal-chip {
-            background: #0f172a; color: #38bdf8; border: 1px solid #334155;
+            background: transparent; color: #22d3ee; border: 1px solid #1f1f1f;
             padding: 0.25rem 0.7rem; border-radius: 9999px; font-size: 0.75rem; cursor: pointer; transition: all 0.15s;
         }
-        .modal-chip:hover { background: #38bdf8; color: #0f172a; border-color: #38bdf8; }
+        .modal-chip:hover { background: #22d3ee; color: #000000; border-color: #22d3ee; }
 
         /* Dimmed in-category non-match (mobile list) */
         .lab-card.dimmed { opacity: 0.35; }
@@ -382,7 +382,7 @@
 
         .contact-list a,
         .link-list a {
-            color: #38bdf8;
+            color: #22d3ee;
             text-decoration: none;
         }
 
@@ -479,25 +479,26 @@
         }
 
         .modal-content {
-            background: #1e293b;
+            background: #000000;
             border-radius: 16px;
             max-width: 700px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
-            border: 1px solid #334155;
+            border: 1px solid #1a1a1a;
+            box-shadow: 0 14px 36px -10px rgba(0, 0, 0, 0.75);
             position: relative;
         }
 
         .modal-header {
-            background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+            background: #000000;
             padding: 2rem;
-            border-bottom: 1px solid #334155;
+            border-bottom: 1px solid #1a1a1a;
         }
 
         .modal-title {
             font-size: 1.75rem;
-            color: #38bdf8;
+            color: #22d3ee;
             margin-bottom: 0.5rem;
         }
 
@@ -515,7 +516,7 @@
         }
 
         .modal-section h4 {
-            color: #38bdf8;
+            color: #22d3ee;
             margin-bottom: 0.5rem;
             font-size: 0.9rem;
             text-transform: uppercase;
@@ -543,15 +544,15 @@
             width: auto;
             flex: 0 0 auto;
             border-radius: 0.5rem;
-            border: 1px solid #334155;
-            background: #0f172a;
+            border: 1px solid #1a1a1a;
+            background: #000000;
             display: block;
             cursor: zoom-in;
             scroll-snap-align: start;
             transition: border-color 0.15s, transform 0.15s;
         }
         .modal-gallery img:hover {
-            border-color: #38bdf8;
+            border-color: #22d3ee;
             transform: translateY(-2px);
         }
         .modal-gallery-caption {
@@ -594,7 +595,7 @@
             line-height: 1;
             cursor: pointer;
         }
-        .img-lightbox-close:hover { color: #38bdf8; }
+        .img-lightbox-close:hover { color: #22d3ee; }
 
         .close-modal {
             position: absolute;
@@ -629,10 +630,10 @@
         }
         .about-list li::before {
             content: ''; position: absolute; left: 0; top: 0.85rem;
-            width: 6px; height: 6px; border-radius: 50%; background: #38bdf8;
+            width: 6px; height: 6px; border-radius: 50%; background: #22d3ee;
         }
         .about-contact-line { color: #cbd5e1; line-height: 1.55; }
-        .about-contact-line a { color: #38bdf8; text-decoration: none; font-weight: 600; }
+        .about-contact-line a { color: #22d3ee; text-decoration: none; font-weight: 600; }
         .about-contact-line a:hover { text-decoration: underline; }
 
         @media (max-width: 768px) {
@@ -4281,8 +4282,8 @@
                 <div class="modal-section">
                     <h4>Award & support</h4>
                     <ul class="contact-list">
-                        ${f.amount  ? `<li><strong style="color:#38bdf8;">Amount:</strong> ${escapeHtml(f.amount)}</li>` : ''}
-                        ${f.support ? `<li><strong style="color:#38bdf8;">Support:</strong> ${escapeHtml(f.support)}</li>` : ''}
+                        ${f.amount  ? `<li><strong style="color:#22d3ee;">Amount:</strong> ${escapeHtml(f.amount)}</li>` : ''}
+                        ${f.support ? `<li><strong style="color:#22d3ee;">Support:</strong> ${escapeHtml(f.support)}</li>` : ''}
                     </ul>
                 </div>
             ` : '';
@@ -4290,9 +4291,9 @@
                 <div class="modal-section">
                     <h4>Timeline</h4>
                     <ul class="contact-list">
-                        ${f.openWindow ? `<li><strong style="color:#38bdf8;">Application window:</strong> ${escapeHtml(f.openWindow)}</li>` : ''}
-                        ${f.deadline   ? `<li><strong style="color:#38bdf8;">Deadline:</strong> ${escapeHtml(f.deadline)}</li>` : ''}
-                        ${f.nextCycle  ? `<li><strong style="color:#38bdf8;">Next cycle:</strong> ${escapeHtml(f.nextCycle)}</li>` : ''}
+                        ${f.openWindow ? `<li><strong style="color:#22d3ee;">Application window:</strong> ${escapeHtml(f.openWindow)}</li>` : ''}
+                        ${f.deadline   ? `<li><strong style="color:#22d3ee;">Deadline:</strong> ${escapeHtml(f.deadline)}</li>` : ''}
+                        ${f.nextCycle  ? `<li><strong style="color:#22d3ee;">Next cycle:</strong> ${escapeHtml(f.nextCycle)}</li>` : ''}
                     </ul>
                 </div>
             ` : '';
@@ -4331,7 +4332,7 @@
                     ${researcher.notable ? `
                     <div class="modal-section">
                         <h4>${researcher.category === 'Funding' ? 'Highlight' : 'Key Achievement'}</h4>
-                        <p style="color: #38bdf8;">${researcher.notable}</p>
+                        <p style="color: #22d3ee;">${researcher.notable}</p>
                     </div>
                     ` : ''}
 
