@@ -47,7 +47,7 @@ The map is Leaflet 1.9.4 with CARTO dark tiles. Key behaviours enforced in the `
 
 ## Git / GitHub
 
-- Remote: `https://github.com/CharlyKerken/implant-radar`
+- Remote: `https://github.com/CharlyKerken/Neural-Sparks`
 - Branch: `main`
 - **After every meaningful change, stage, commit, and push immediately.** Do not batch multiple unrelated changes into one commit. This ensures GitHub always reflects the current state and any change can be cleanly reverted.
 - Use concise imperative commit messages (`Add photo for X`, `Fix filter layout`, `Update Stieglitz description`).
