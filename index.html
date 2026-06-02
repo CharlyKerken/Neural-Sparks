@@ -379,6 +379,10 @@
             width: 26px;
             height: 26px;
             filter: drop-shadow(0 0 4px rgba(56, 189, 248, 0.6));
+            /* Promote each marker to its own GPU layer so the drop-shadow is
+               rasterized once and merely composited (not repainted) during the
+               zoom animation — eliminates per-frame filter repaints. */
+            will-change: transform;
         }
 
         .custom-marker svg {
