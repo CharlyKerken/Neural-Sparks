@@ -4,19 +4,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project overview
 
-Single-file static website (`Website.html`) — no build step, no dependencies to install. Open it directly in a browser or serve it with any static file server:
+Single-file static website (`index.html`) — no build step, no dependencies to install. Open it directly in a browser or serve it with any static file server:
 
 ```bash
 # Quick local server (Python)
 python3 -m http.server 8080
-# Then open http://localhost:8080/Website.html
+# Then open http://localhost:8080/index.html
 ```
 
 To deploy, just push to `main`; the file can be served from any static host.
 
 ## Architecture
 
-Everything lives in `Website.html` in three sequential sections:
+Everything lives in `index.html` in three sequential sections:
 
 1. **`<style>` block** — all CSS. Dark theme using Tailwind-inspired slate palette (`#0f172a`, `#1e293b`, `#334155`). Accent colour is sky blue (`#38bdf8`). The `.avatar` component handles both photo (`<img>`) and initials fallback automatically.
 
