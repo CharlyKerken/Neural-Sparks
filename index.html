@@ -780,8 +780,7 @@
             Society: {
                 label: "Societies",
                 facets: {
-                    type:     { label: "Type",     values: ["Scientific","Clinical","Community","Advocacy","Patient-led"] },
-                    activity: { label: "Activity", values: ["Conferences","Standards","Trial coordination","Networking","Advocacy"] }
+                    focus: { label: "Focus", values: ["BCI","Neuromodulation","Decoding","Standards","Neuroscience","Ethics","Community"] }
                 }
             }
         };
@@ -3397,8 +3396,7 @@
                 topic: "The primary scientific body for BCI research; hosts the biennial International BCI Meeting",
                 category: "Society",
                 tags: {
-                    type: ["Scientific"],
-                    activity: ["Conferences", "Networking"]
+                    focus: ["BCI"]
                 },
                 description: "Defines terminology for the BCI field, hosts the definitive International BCI Meeting, and connects global academic labs working on invasive and non-invasive brain-computer interfaces.",
                 notable: "Host of the International BCI Meeting — the field's flagship academic gathering",
@@ -3418,8 +3416,7 @@
                 topic: "Cross-disciplinary IEEE community uniting engineers and computer scientists around neurotechnology standards",
                 category: "Society",
                 tags: {
-                    type: ["Clinical", "Scientific"],
-                    activity: ["Conferences", "Standards"]
+                    focus: ["Standards"]
                 },
                 description: "Cross-disciplinary IEEE technical community working to standardize neural data formats and hardware interfaces. Hosts the IEEE NER (Neural Engineering Conference) and coordinates IEEE's neurotechnology activities across societies.",
                 notable: "Hosts IEEE NER and coordinates neural-data standardization efforts",
@@ -3439,8 +3436,7 @@
                 topic: "FDA-recognised collaborative community syncing researchers, clinicians, and regulators around invasive BCI trial pathways",
                 category: "Society",
                 tags: {
-                    type: ["Clinical"],
-                    activity: ["Trial coordination"]
+                    focus: ["BCI"]
                 },
                 description: "Highly specialized hub aligning iBCI researchers, clinicians, manufacturers, and regulatory bodies. Builds shared pathways for human surgical trials and FDA approval of implantable BCIs.",
                 notable: "First FDA-recognised collaborative community focused on implantable BCIs",
@@ -3460,8 +3456,7 @@
                 topic: "The largest grassroots community for neurotech innovators — hackathons, student clubs, and professional networking",
                 category: "Society",
                 tags: {
-                    type: ["Community"],
-                    activity: ["Networking"]
+                    focus: ["Community"]
                 },
                 description: "Largest global grassroots community for neurotech innovators. Runs 30+ city chapters, NeuroTech Open hackathons, student clubs, and an active job board — useful for hiring, quiet-mode networking, and meeting stealth-mode iBCI startups.",
                 notable: "30+ city chapters and annual NeuroTech Open hackathons",
@@ -3481,8 +3476,7 @@
                 topic: "Multidisciplinary global network of neurosurgeons and engineers shaping neuromodulation hardware (DBS, SCS, iBCI)",
                 category: "Society",
                 tags: {
-                    type: ["Clinical"],
-                    activity: ["Conferences", "Networking"]
+                    focus: ["Neuromodulation"]
                 },
                 description: "Multidisciplinary global network of neurosurgeons, engineers, and clinicians focused on scientific development and clinical delivery of neuromodulation hardware — deep brain stimulation, spinal cord stimulation, and emerging iBCI systems.",
                 notable: "33 global chapters spanning the major neuromodulation device markets",
@@ -3502,8 +3496,7 @@
                 topic: "Professional home for the functional neurosurgeons who physically implant invasive BCIs and closed-loop stimulators",
                 category: "Society",
                 tags: {
-                    type: ["Clinical"],
-                    activity: ["Conferences", "Trial coordination"]
+                    focus: ["Neuromodulation"]
                 },
                 description: "The primary professional society for functional neurosurgeons in the US — the clinicians who physically implant invasive BCI arrays, DBS leads, and responsive neurostimulators. Sets surgical training standards and convenes biennial scientific meetings.",
                 notable: "Convenes the surgeons performing first-in-human iBCI implantations",
@@ -3523,8 +3516,7 @@
                 topic: "Academic society targeting high-density spatial/temporal mapping and signal decoding for multi-electrode arrays",
                 category: "Society",
                 tags: {
-                    type: ["Scientific"],
-                    activity: ["Conferences"]
+                    focus: ["Decoding"]
                 },
                 description: "Academic society focused on high-density spatial and temporal mapping of brain electromagnetic activity, and on the advanced signal-decoding algorithms required for multi-electrode ECoG and EEG arrays.",
                 notable: "Convenes the signal-processing community behind multi-electrode decoding",
@@ -3544,8 +3536,7 @@
                 topic: "Coalition of the world's first iBCI research participants collaborating on ethical trial design and patient care",
                 category: "Society",
                 tags: {
-                    type: ["Patient-led"],
-                    activity: ["Advocacy"]
+                    focus: ["Ethics"]
                 },
                 description: "Unique coalition led by the world's first implantable BCI research participants. Brings lived-experience perspectives into trial design, informed-consent practice, post-trial device support, and the ethics of explant and chronic care.",
                 notable: "First patient-led coalition organised around invasive BCI lived experience",
@@ -3565,8 +3556,7 @@
                 topic: "Advocates for international legal frameworks protecting neural data, mental privacy, and cognitive liberty in the iBCI era",
                 category: "Society",
                 tags: {
-                    type: ["Advocacy"],
-                    activity: ["Advocacy"]
+                    focus: ["Ethics"]
                 },
                 description: "Advocates for international legal frameworks to guard neural data, protect mental privacy, and regulate cognitive liberty as implantable BCIs scale. Engages with the UN, national legislatures, and industry to push neurorights into law.",
                 notable: "Drove the world's first neurorights legislation (Chile, 2021)",
@@ -3586,8 +3576,7 @@
                 topic: "Global federation of 90+ neuroscience societies supporting the basic neurobiology that underpins implant engineering",
                 category: "Society",
                 tags: {
-                    type: ["Scientific"],
-                    activity: ["Networking"]
+                    focus: ["Neuroscience"]
                 },
                 description: "Global federation of 90+ regional neuroscience societies. Funds early-career training, runs schools and workshops across underserved regions, and supports the foundational animal-model and basic-neurobiology work that implant engineering depends on.",
                 notable: "Federation umbrella for 90+ national neuroscience societies",
@@ -3607,8 +3596,7 @@
                 topic: "Special-interest community for trainees working at the intersection of cognitive testing, data, and implantable tech",
                 category: "Society",
                 tags: {
-                    type: ["Clinical"],
-                    activity: ["Networking"]
+                    focus: ["Community"]
                 },
                 description: "Special interest community within the Association of Neuropsychology Students in Training for trainees and students working at the intersection of clinical neuropsychology, cognitive assessment, and implantable neurotechnology.",
                 notable: "Bridges clinical neuropsychology trainees into the iBCI assessment pipeline",
@@ -3649,8 +3637,7 @@
                 topic: "Open-source neurotech ecosystem — community-built hardware, software, firmware, and communication standards for BCIs and neural prosthetics",
                 category: "Society",
                 tags: {
-                    type: ["Community", "Scientific"],
-                    activity: ["Standards", "Networking"]
+                    focus: ["Community"]
                 },
                 description: "Independent community organisation building an open-source ecosystem for neurotech, uniting researchers, engineers, and clinicians around shared hardware, software, and protocol standards. Collaborates with TU Delft on bootcamps, webinars, and student challenges to break down barriers created by proprietary tech.",
                 notable: "Hosts the AIMD NeuroTech Bootcamp and the TU Delft Neuro Challenge",
