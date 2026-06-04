@@ -624,12 +624,26 @@
         .about-contact-line a:hover { text-decoration: underline; }
 
         @media (max-width: 768px) {
-            .topbar { width: calc(100% - 1rem); top: 0.5rem; border-radius: 14px; }
+            /* Drop the floating overlay: on phones the title + filters sit in
+               normal flow at the top, and the map fills the space below them
+               (its height is set in JS to innerHeight − topbar height). */
+            .topbar {
+                position: static;
+                transform: none;
+                top: auto; left: auto;
+                width: 100%;
+                max-width: none;
+                border-radius: 0;
+                border-left: none; border-right: none; border-top: none;
+                box-shadow: 0 6px 18px -8px rgba(0, 0, 0, 0.7);
+            }
+            header { padding: 0.6rem 1rem; }
+            .filters { padding: 0.5rem 1rem 0.6rem; }
             .brand-word { font-size: 1.1rem; }
             .header-brand { gap: 0.55rem; }
             .header-logo { height: 40px; }
             .stats { display: none; }
-            #map { height: 100vh; }
+            #map { width: 100%; } /* height set by applyMobileMapHeight() in JS */
             .lab-list { display: block; margin-top: 1rem; }
             .filter-container { gap: 0.25rem; }
         }
@@ -3848,11 +3862,30 @@
         function getMinZoom() {
             const mapEl = document.getElementById('map');
             const tileSize = 256;
-            return Math.max(
-                Math.log2(mapEl.clientWidth / tileSize),
-                Math.log2(mapEl.clientHeight / (tileSize * BOUNDS_HEIGHT_FRAC))
-            );
+            const widthFit = Math.log2(mapEl.clientWidth / tileSize);
+            const heightFit = Math.log2(mapEl.clientHeight / (tileSize * BOUNDS_HEIGHT_FRAC));
+            // On phones the viewport is tall and narrow, so filling the height
+            // would crop most longitudes. Fit by width instead so the whole
+            // world is visible by default (the dark map background letterboxes
+            // the leftover vertical space); users zoom in from there.
+            if (window.innerWidth <= 768) return widthFit;
+            return Math.max(widthFit, heightFit);
         }
+
+        // On phones, give the map exactly the viewport height left below the
+        // in-flow top bar so it is always fully visible. On larger screens the
+        // map keeps its CSS height (100vh) under the floating top bar.
+        function applyMobileMapHeight() {
+            const mapEl = document.getElementById('map');
+            if (window.innerWidth <= 768) {
+                const topbar = document.querySelector('.topbar');
+                const tb = topbar ? topbar.offsetHeight : 0;
+                mapEl.style.height = (window.innerHeight - tb) + 'px';
+            } else {
+                mapEl.style.height = '';
+            }
+        }
+        applyMobileMapHeight();
 
         const initialMinZoom = getMinZoom();
 
@@ -3908,6 +3941,8 @@
 
         // Re-lock the minimum zoom on resize so the world keeps filling the viewport
         window.addEventListener('resize', () => {
+            applyMobileMapHeight();
+            map.invalidateSize();
             const newMinZoom = getMinZoom();
             map.setMinZoom(newMinZoom);
             if (map.getZoom() < newMinZoom) {
