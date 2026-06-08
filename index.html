@@ -379,10 +379,15 @@
             width: 26px;
             height: 26px;
             filter: drop-shadow(0 0 4px rgba(56, 189, 248, 0.6));
-            /* Promote each marker to its own GPU layer so the drop-shadow is
-               rasterized once and merely composited (not repainted) during the
-               zoom animation — eliminates per-frame filter repaints. */
-            will-change: transform;
+        }
+
+        /* While Leaflet animates a zoom it transform-scales the whole map pane
+           (which carries the .leaflet-zoom-anim class). Compositing a
+           drop-shadow filter on every one of ~139 markers each frame is the
+           main source of zoom jank, so we drop the shadow for the duration of
+           the animation — the glow snaps back the instant the zoom settles. */
+        .leaflet-zoom-anim .custom-marker {
+            filter: none;
         }
 
         .custom-marker svg {
