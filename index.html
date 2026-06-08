@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Our Neurotech</title>
     
-    <!-- Leaflet CSS for the map -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- MapLibre GL CSS for the map -->
+    <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" />
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -206,14 +206,13 @@
             background: #0f172a;
         }
 
-        /* Custom Popup Styling — black / white / cyan, matches top bar */
-        /* Popups are bound to a custom pane mounted on <body> (see the
-           floatingPopup pane setup in JS) so they overlay the top bar.
-           The fallback rule below keeps any popup rendered in the default
-           pane visually consistent if the pane override ever fails. */
-        .leaflet-popup-pane { z-index: 1100; }
+        /* Custom Popup Styling — black / white / cyan, matches top bar.
+           A high z-index lifts popups above the fixed top bar (z-index 1000).
+           #map creates no stacking context, so the absolutely-positioned popup
+           resolves against the root context and paints over the top bar. */
+        .maplibregl-popup { z-index: 1500; }
 
-        .leaflet-popup-content-wrapper {
+        .maplibregl-popup-content {
             background: #000000;
             color: #ffffff;
             border-radius: 14px;
@@ -221,17 +220,18 @@
             overflow: hidden;
             border: 1px solid #1f1f1f;
             box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.8);
+            width: 280px;
         }
 
-        .leaflet-popup-content {
-            margin: 0;
-            width: 280px !important;
-        }
-
-        .leaflet-popup-tip {
-            background: #000000;
-            border: 1px solid #1f1f1f;
-        }
+        /* Tint the little pointer triangle black on whichever side it appears. */
+        .maplibregl-popup-anchor-top .maplibregl-popup-tip,
+        .maplibregl-popup-anchor-top-left .maplibregl-popup-tip,
+        .maplibregl-popup-anchor-top-right .maplibregl-popup-tip { border-bottom-color: #000000; }
+        .maplibregl-popup-anchor-bottom .maplibregl-popup-tip,
+        .maplibregl-popup-anchor-bottom-left .maplibregl-popup-tip,
+        .maplibregl-popup-anchor-bottom-right .maplibregl-popup-tip { border-top-color: #000000; }
+        .maplibregl-popup-anchor-left .maplibregl-popup-tip { border-right-color: #000000; }
+        .maplibregl-popup-anchor-right .maplibregl-popup-tip { border-left-color: #000000; }
 
         .popup-header {
             background: #000000;
@@ -378,16 +378,8 @@
         .custom-marker {
             width: 26px;
             height: 26px;
+            cursor: pointer;
             filter: drop-shadow(0 0 4px rgba(56, 189, 248, 0.6));
-        }
-
-        /* While Leaflet animates a zoom it transform-scales the whole map pane
-           (which carries the .leaflet-zoom-anim class). Compositing a
-           drop-shadow filter on every one of ~139 markers each frame is the
-           main source of zoom jank, so we drop the shadow for the duration of
-           the animation — the glow snaps back the instant the zoom settles. */
-        .leaflet-zoom-anim .custom-marker {
-            filter: none;
         }
 
         .custom-marker svg {
@@ -735,8 +727,8 @@
         <img id="imgLightboxImg" src="" alt="">
     </div>
 
-    <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- MapLibre GL JS -->
+    <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
     
     <script>
         // Researchers Database. For each person:
@@ -3891,7 +3883,8 @@
         // Mercator-stretched ice sheet doesn't dominate the bottom of the map.
         const NORTH_LAT = 85.05;
         const SOUTH_LAT = -60;
-        const WORLD_BOUNDS = L.latLngBounds([SOUTH_LAT, -180], [NORTH_LAT, 180]);
+        // MapLibre maxBounds use [[west, south], [east, north]] (lng, lat order).
+        const WORLD_BOUNDS = [[-180, SOUTH_LAT], [180, NORTH_LAT]];
 
         // Web Mercator y position of a latitude, normalized to [0, 1] over the
         // full ±85.05° world. Used to size the cropped bounds in tile pixels.
@@ -3906,7 +3899,8 @@
         // bounded height is BOUNDS_HEIGHT_FRAC * 256 * 2^z.
         function getMinZoom() {
             const mapEl = document.getElementById('map');
-            const tileSize = 256;
+            // MapLibre's zoom scale puts the whole world at 512 * 2^zoom pixels.
+            const tileSize = 512;
             const widthFit = Math.log2(mapEl.clientWidth / tileSize);
             const heightFit = Math.log2(mapEl.clientHeight / (tileSize * BOUNDS_HEIGHT_FRAC));
             // On phones the viewport is tall and narrow, so filling the height
@@ -3934,60 +3928,31 @@
 
         const initialMinZoom = getMinZoom();
 
-        // Initialize map: centered on the world, locked inside world bounds
-        // (maxBoundsViscosity: 1.0 makes the edges hard, like Google Maps)
-        const map = L.map('map', {
-            center: [38, 0],
+        // Initialize the map: a GPU-rendered MapLibre GL vector map using CARTO's
+        // free "dark matter" vector style (the vector equivalent of the dark
+        // raster tiles used previously). Vector tiles scale continuously on the
+        // GPU, so zooming and panning stay smooth. The view is locked inside the
+        // cropped world bounds; renderWorldCopies:false stops the map repeating.
+        const map = new maplibregl.Map({
+            container: 'map',
+            style: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
+            center: [0, 38],            // [lng, lat]
             zoom: initialMinZoom,
             minZoom: initialMinZoom,
             maxZoom: 10,
             maxBounds: WORLD_BOUNDS,
-            maxBoundsViscosity: 1.0,
-            worldCopyJump: false,
-            scrollWheelZoom: true,
-            zoomSnap: 0.25,
-            zoomDelta: 0.5,
-            attributionControl: false
+            renderWorldCopies: false,
+            attributionControl: false,
+            dragRotate: false,
+            pitchWithRotate: false
         });
-
-        // Dark theme map tiles - no wrapping
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-            subdomains: 'abcd',
-            maxZoom: 19,
-            noWrap: true,
-            bounds: [[-90, -180], [90, 180]]
-        }).addTo(map);
-
-        // Floating popup pane: mounted on <body> (not inside #map) so popups
-        // escape the stacking context that .leaflet-map-pane's transform creates,
-        // letting them render above the z-index:1000 top bar. The container's
-        // transform mirrors #map's screen offset + the map-pane's pan offset so
-        // Leaflet's normal layer-point positioning lands the popup on its marker.
-        const floatingPopupContainer = document.createElement('div');
-        floatingPopupContainer.style.cssText = 'position: fixed; top: 0; left: 0; width: 0; height: 0; pointer-events: none; z-index: 1500;';
-        document.body.appendChild(floatingPopupContainer);
-        map.createPane('floatingPopup', floatingPopupContainer);
-        const floatingPopupPane = map.getPane('floatingPopup');
-        floatingPopupPane.style.zIndex = '1500';
-        floatingPopupPane.style.pointerEvents = 'auto';
-
-        function syncFloatingPopupPane() {
-            const mapEl = document.getElementById('map');
-            const mapRect = mapEl.getBoundingClientRect();
-            const mapPanePos = L.DomUtil.getPosition(map.getPanes().mapPane) || L.point(0, 0);
-            floatingPopupContainer.style.transform =
-                `translate3d(${mapRect.left + mapPanePos.x}px, ${mapRect.top + mapPanePos.y}px, 0)`;
-        }
-        map.on('move zoom viewreset moveend zoomend load', syncFloatingPopupPane);
-        map.on('zoomanim', () => requestAnimationFrame(syncFloatingPopupPane));
-        window.addEventListener('resize', syncFloatingPopupPane);
-        syncFloatingPopupPane();
+        // Flat, north-up map only — disable touch/gesture rotation and tilt.
+        map.touchZoomRotate.disableRotation();
 
         // Re-lock the minimum zoom on resize so the world keeps filling the viewport
         window.addEventListener('resize', () => {
             applyMobileMapHeight();
-            map.invalidateSize();
+            map.resize();
             const newMinZoom = getMinZoom();
             map.setMinZoom(newMinZoom);
             if (map.getZoom() < newMinZoom) {
@@ -4000,27 +3965,30 @@
         // pixel-space circle so they remain individually visible.
         // At high zoom: real geographic separation is large enough in pixels, so
         // markers snap back to their exact coordinates.
+        // Researcher coords are stored [lat, lng]; MapLibre wants [lng, lat].
+        const lngLat = c => [c[1], c[0]];
+
         function repositionMarkers() {
             proximityGroups.forEach(group => {
                 if (group.length === 1) {
-                    markers[group[0].id].setLatLng(group[0].coords);
+                    markers[group[0].id].setLngLat(lngLat(group[0].coords));
                     return;
                 }
                 const N = group.length;
-                const pts = group.map(r => map.latLngToContainerPoint(L.latLng(r.coords)));
+                const pts = group.map(r => map.project(lngLat(r.coords)));
 
                 // Find the smallest pairwise pixel distance within this group
                 let minDist = Infinity;
                 for (let i = 0; i < N; i++) {
                     for (let j = i + 1; j < N; j++) {
-                        const d = pts[i].distanceTo(pts[j]);
+                        const d = Math.hypot(pts[i].x - pts[j].x, pts[i].y - pts[j].y);
                         if (d < minDist) minDist = d;
                     }
                 }
 
                 if (minDist >= MIN_PIXEL_GAP) {
                     // Already well-separated at this zoom — use exact coordinates
-                    group.forEach(r => markers[r.id].setLatLng(r.coords));
+                    group.forEach(r => markers[r.id].setLngLat(lngLat(r.coords)));
                 } else {
                     // Spread onto a circle in pixel space so adjacent markers are
                     // exactly MIN_PIXEL_GAP pixels apart
@@ -4029,8 +3997,9 @@
                     const radius = N === 1 ? 0 : MIN_PIXEL_GAP / (2 * Math.sin(Math.PI / N));
                     group.forEach((r, i) => {
                         const angle = (2 * Math.PI * i / N) - Math.PI / 2;
-                        const offsetPt = L.point(cx + radius * Math.cos(angle), cy + radius * Math.sin(angle));
-                        markers[r.id].setLatLng(map.containerPointToLatLng(offsetPt));
+                        const px = cx + radius * Math.cos(angle);
+                        const py = cy + radius * Math.sin(angle);
+                        markers[r.id].setLngLat(map.unproject([px, py]));
                     });
                 }
             });
@@ -4039,13 +4008,10 @@
         map.on('zoomend', repositionMarkers);
 
         // After a star's popup closes, sink it below its cluster neighbours so the
-        // most-recently-opened star is always easiest to click past.
+        // most-recently-opened star is always easiest to click past. MapLibre has
+        // no marker z-index API, so we drive the element's z-index directly (wired
+        // up per-marker in initMarkers via each popup's "close" event).
         let demoteSeq = 0;
-        map.on('popupclose', (e) => {
-            if (e.popup._source && e.popup._source.setZIndexOffset) {
-                e.popup._source.setZIndexOffset(--demoteSeq * 1000);
-            }
-        });
 
         // Store markers for filtering
         const markers = {};
@@ -4058,14 +4024,11 @@
             </svg>
         `;
 
-        function createCustomIcon() {
-            return L.divIcon({
-                className: 'custom-marker',
-                html: SPARKLE_SVG,
-                iconSize: [26, 26],
-                iconAnchor: [13, 13],
-                popupAnchor: [0, -13]
-            });
+        function createMarkerElement() {
+            const el = document.createElement('div');
+            el.className = 'custom-marker';
+            el.innerHTML = SPARKLE_SVG;
+            return el;
         }
 
         function getInitials(name) {
@@ -4108,12 +4071,12 @@
         }
 
         // Initialize markers (created but NOT added to the map — applyFilters()
-        // controls layer membership so non-active categories disappear entirely).
+        // controls map membership so non-active categories disappear entirely).
         function initMarkers() {
             researchers.forEach(researcher => {
-                const marker = L.marker(researcher.coords, {
-                    icon: createCustomIcon()
-                });
+                const el = createMarkerElement();
+                const marker = new maplibregl.Marker({ element: el, anchor: 'center' })
+                    .setLngLat(lngLat(researcher.coords));
 
                 const popupContent = `
                     <div class="popup-header">
@@ -4131,7 +4094,18 @@
                     </div>
                 `;
 
-                marker.bindPopup(popupContent, { pane: 'floatingPopup', closeButton: false });
+                const popup = new maplibregl.Popup({
+                    closeButton: false,
+                    offset: 18,
+                    maxWidth: '280px'
+                }).setHTML(popupContent);
+
+                marker.setPopup(popup);
+                // Raise the active marker; sink it again once its popup closes so
+                // the most-recently-opened star is easiest to click past.
+                el.addEventListener('click', () => { el.style.zIndex = '10000'; });
+                popup.on('close', () => { el.style.zIndex = String(--demoteSeq); });
+
                 markers[researcher.id] = marker;
             });
         }
@@ -4304,20 +4278,20 @@
         function applyFilters() {
             researchers.forEach(r => {
                 const marker = markers[r.id];
+                const el = marker.getElement();
+                const onMap = el.isConnected;
                 const card = document.querySelector(`.lab-card[data-id="${r.id}"]`);
                 if (r.category !== activeCategory) {
-                    if (map.hasLayer(marker)) map.removeLayer(marker);
+                    if (onMap) marker.remove();
                     if (card) { card.classList.add('hidden'); card.classList.remove('dimmed'); }
                     return;
                 }
-                if (!map.hasLayer(marker)) marker.addTo(map);
+                if (!onMap) marker.addTo(map);
                 if (entryMatches(r)) {
-                    marker.setOpacity(1);
-                    if (marker._icon) marker._icon.classList.remove('filtered-out');
+                    el.classList.remove('filtered-out');
                     if (card) { card.classList.remove('hidden'); card.classList.remove('dimmed'); }
                 } else {
-                    marker.setOpacity(0.25);
-                    if (marker._icon) marker._icon.classList.add('filtered-out');
+                    el.classList.add('filtered-out');
                     if (card) { card.classList.remove('hidden'); card.classList.add('dimmed'); }
                 }
             });
