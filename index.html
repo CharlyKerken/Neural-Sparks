@@ -157,6 +157,66 @@
         }
         .clear-all-btn:hover { background: #ef4444; color: #ffffff; }
 
+        /* Conference timeline range selector — replaces the Timeline tag buttons.
+           A track with two draggable handles selects a date window; diamonds mark
+           each conference, dimmed when they fall outside the selection. */
+        .timeline-widget { display: none; width: 100%; margin-top: 0.45rem; }
+        .timeline-widget.show { display: block; }
+        .tl-head {
+            display: flex; align-items: center; justify-content: center;
+            gap: 0.6rem; flex-wrap: wrap; margin-bottom: 0.1rem;
+        }
+        .tl-label {
+            color: #5a5a5a; font-size: 0.58rem; font-weight: 600;
+            letter-spacing: 0.18em; text-transform: uppercase;
+        }
+        .tl-range-text { color: #22d3ee; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.03em; }
+        .tl-reset {
+            background: transparent; border: 1px solid #1f1f1f; color: #6b6b6b;
+            padding: 0.12rem 0.55rem; border-radius: 9999px; cursor: pointer;
+            font-size: 0.56rem; font-weight: 500; letter-spacing: 0.1em;
+            text-transform: uppercase; font-family: inherit;
+            transition: color 0.15s, border-color 0.15s;
+        }
+        .tl-reset:hover { color: #ffffff; border-color: #22d3ee; }
+        .tl-track-wrap { position: relative; padding: 0 10px; max-width: 720px; margin: 0 auto; }
+        .tl-track {
+            position: relative; height: 6px; background: #1a1a1a;
+            border-radius: 9999px; margin: 20px 0 8px; cursor: pointer;
+            touch-action: none;
+        }
+        .tl-range-fill {
+            position: absolute; top: 0; height: 100%;
+            background: #22d3ee; border-radius: 9999px; pointer-events: none;
+        }
+        .tl-event {
+            position: absolute; top: 50%; width: 7px; height: 7px;
+            margin-left: -3.5px; transform: translateY(-50%) rotate(45deg);
+            background: #38bdf8; border-radius: 1px; pointer-events: none; z-index: 1;
+            box-shadow: 0 0 4px rgba(56, 189, 248, 0.6);
+            transition: background 0.15s, opacity 0.15s, box-shadow 0.15s;
+        }
+        .tl-event.out { background: #3a3a3a; box-shadow: none; opacity: 0.55; }
+        .tl-thumb {
+            position: absolute; top: 50%; width: 16px; height: 16px;
+            margin-left: -8px; transform: translateY(-50%);
+            background: #000000; border: 2px solid #22d3ee; border-radius: 50%;
+            cursor: grab; touch-action: none; z-index: 3;
+            box-shadow: 0 0 6px rgba(34, 211, 238, 0.5);
+            transition: background 0.12s;
+        }
+        .tl-thumb:hover { background: #22d3ee; }
+        .tl-thumb:active { cursor: grabbing; }
+        .tl-ticks { position: relative; height: 13px; }
+        .tl-tick {
+            position: absolute; transform: translateX(-50%);
+            color: #5a5a5a; font-size: 0.56rem; letter-spacing: 0.02em; white-space: nowrap;
+        }
+        .tl-tick::before {
+            content: ''; position: absolute; top: -7px; left: 50%;
+            width: 1px; height: 4px; background: #2a2a2a;
+        }
+
         /* Modal grouped chips */
         .facet-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; margin-bottom: 0.5rem; }
         .facet-row-label {
@@ -668,6 +728,7 @@
             <div class="filter-container">
                 <div id="categoryBar" class="category-bar"></div>
                 <div id="facetBar" class="facet-bar"></div>
+                <div id="timelineWidget" class="timeline-widget"></div>
                 <div id="activeChips" class="active-chips"></div>
             </div>
         </div>
@@ -775,8 +836,9 @@
             },
             Conference: {
                 label: "Conferences",
+                // Timeline is handled by the draggable date-range widget below the
+                // facets (see buildTimeline), not as tag buttons.
                 facets: {
-                    timeline: { label: "Timeline", values: ["Happening soon","Upcoming","Past — plan for next cycle","Year-round"] },
                     focus:    { label: "Focus",    values: ["BCI / Neural engineering","Clinical","Hardware","General"] }
                 }
             },
@@ -2863,8 +2925,8 @@
                 coords: [36.6168, -121.9408],
                 topic: "8-11 June 2026 · the premier dedicated gathering of the BCI research community",
                 category: "Conference",
+                date: { start: "2026-06-08", end: "2026-06-11" },
                 tags: {
-                    timeline: ["Happening soon"],
                     focus: ["BCI / Neural engineering", "General", "Hardware"]
                 },
                 description: "Premier dedicated meeting for the BCI community — programme covers soft-electrode materials through human-in-the-loop decoding for invasive motor and speech prostheses. Rotates between Asilomar (US years) and European venues.",
@@ -2884,8 +2946,8 @@
                 coords: [43.6532, -79.3832],
                 topic: "26-30 July 2026 · IEEE EMBS flagship engineering-in-medicine annual",
                 category: "Conference",
+                date: { start: "2026-07-26", end: "2026-07-30" },
                 tags: {
-                    timeline: ["Upcoming"],
                     focus: ["Hardware"]
                 },
                 description: "Massive engineering-first conference. The Neural Engineering tracks are the home venue for iBCI hardware — microelectrode design, chip architecture, and signal processing.",
@@ -2905,8 +2967,8 @@
                 coords: [38.9026, -77.0238],
                 topic: "Oct/Nov 2026 · the largest neuroscience gathering in the world",
                 category: "Conference",
+                date: { start: "2026-11-14", end: "2026-11-18" },
                 tags: {
-                    timeline: ["Upcoming"],
                     focus: ["Clinical", "General"]
                 },
                 description: "The largest neuroscience meeting in the world. The Brain-Machine Interfaces and Neuroprosthetics symposia are where leading academic labs unveil their newest non-human-primate and human iBCI data.",
@@ -2926,8 +2988,8 @@
                 coords: [36.1147, -115.1728],
                 topic: "January (annual) · clinical home of DBS, SCS, and emerging iBCI surgical techniques",
                 category: "Conference",
+                date: { start: "2027-01-15", end: "2027-01-18" },
                 tags: {
-                    timeline: ["Past — plan for next cycle"],
                     focus: ["Clinical"]
                 },
                 description: "Highly clinical. Main gathering for neurosurgeons and clinical researchers working on implanted hardware, deep brain stimulation, spinal cord stimulation, and emerging iBCI surgical techniques. 2026 edition has passed — plan for January 2027.",
@@ -2947,8 +3009,8 @@
                 coords: [44.0589, 10.4756],
                 topic: "March (biennial) · off-the-record academic retreat at the bioelectronic interface",
                 category: "Conference",
+                date: { start: "2028-03-12", end: "2028-03-17" },
                 tags: {
-                    timeline: ["Past — plan for next cycle"],
                     focus: ["General", "Hardware"]
                 },
                 description: "Highly exclusive, off-the-record GRC focused on the bio-electronic intersection — glial scarring, electrode failure, and the physics of the brain-machine interface.",
@@ -2968,8 +3030,8 @@
                 coords: [40.5193, -74.4151],
                 topic: "April/May (biennial) · IEEE EMBS dedicated neural-engineering conference",
                 category: "Conference",
+                date: { start: "2027-05-03", end: "2027-05-06" },
                 tags: {
-                    timeline: ["Past — plan for next cycle"],
                     focus: ["BCI / Neural engineering", "Clinical", "Hardware"]
                 },
                 description: "Organized by the IEEE EMBS, NER isolates the neural-engineering tracks into a dedicated conference — heavy emphasis on brain implants, neural recording devices, and computational neuroscience.",
@@ -2989,8 +3051,8 @@
                 coords: [37.7749, -122.4194],
                 topic: "Year-round · grassroots chapter meetups and hackathons across major hub cities",
                 category: "Conference",
+                date: { yearRound: true },
                 tags: {
-                    timeline: ["Year-round"],
                     focus: ["General"]
                 },
                 description: "Grassroots community network with active chapters in major hub cities. Chapter meetings frequently host talks from stealth iBCI startups and engineers — useful for hiring and quiet-mode networking.",
@@ -3010,8 +3072,8 @@
                 coords: [52.3683, 4.8910],
                 topic: "17-19 June 2026 · 2026 theme: \"Insight in the Human Brain\" — biennial NIN gathering for early-career researchers",
                 category: "Conference",
+                date: { start: "2026-06-17", end: "2026-06-19" },
                 tags: {
-                    timeline: ["Happening soon"],
                     focus: ["Clinical", "General"]
                 },
                 description: "Biennial summer school hosted by the Netherlands Institute for Neuroscience. The 2026 edition (\"Insight in the Human Brain\") spans three days at the Singelkerk in Amsterdam with lectures from leading scientists on human brain tissue research, large-scale neuroscience datasets, and tissue procurement. Open to participants with at least a bachelor-level background in neuroscience; ~170 attendees, €450 registration including lunch and reception.",
@@ -3031,8 +3093,8 @@
                 coords: [52.0022, 4.3736],
                 topic: "4-5 June 2026 (+ Neurotech Bootcamp 3 June) · industry-academia workshop on the engineering of active implants",
                 category: "Conference",
+                date: { start: "2026-06-04", end: "2026-06-05" },
                 tags: {
-                    timeline: ["Happening soon"],
                     focus: ["Clinical", "Hardware"]
                 },
                 description: "Industry-academia workshop connecting MedTech engineers, clinicians, and regulators around active implants — neurotechnology, cardiac devices, implantable sensors, wireless power, soft materials, packaging reliability, and MDR/FDA pathways. 2025 edition in Barcelona; 2026 hosted by TU Delft's Bioelectronics group. The 3 June \"Neurotech Bootcamp\" targets students and early-career researchers.",
@@ -3631,8 +3693,8 @@
                 coords: [52.0022, 4.3736],
                 topic: "4-5 June 2026 · two-day workshop on active implantable medical devices — engineering, clinical translation, and regulatory strategy",
                 category: "Conference",
+                date: { start: "2026-06-04", end: "2026-06-05" },
                 tags: {
-                    timeline: ["Happening soon"],
                     focus: ["Hardware", "Clinical", "BCI / Neural engineering"]
                 },
                 description: "Two-day MedTech event at TU Delft's Aula Congress Centre covering next-generation active implants — neurotech and bioelectronic medicine, cardiac devices, ultra-low-power electronics, wireless power, soft electrode materials, hermetic packaging, and MDR/FDA regulatory pathways. Combines keynotes, industry exhibitions, posters, and panels.",
@@ -4155,7 +4217,7 @@
             Implant:    ['approach', 'stage'],
             Researcher: ['focus'],
             Trial:      ['phase', 'status'],
-            Conference: ['timeline', 'focus'],
+            Conference: ['focus'],
             Funding:    ['type', 'eligibility'],
             Industry:   ['stage', 'focus'],
             Society:    ['type', 'activity']
@@ -4208,6 +4270,7 @@
             moreFiltersOpen = false;
             renderCategoryBar();
             renderFacetBar();
+            renderTimeline();
             renderActiveChips();
             applyFilters();
         }
@@ -4254,7 +4317,8 @@
         function renderActiveChips() {
             const wrap = document.getElementById('activeChips');
             const hasFilters = Object.keys(activeFilters).some(fk => activeFilters[fk] && activeFilters[fk].size > 0);
-            if (!hasFilters && !searchQuery.trim()) {
+            const tlActive = activeCategory === 'Conference' && tlBuilt && !tlIsDefault();
+            if (!hasFilters && !searchQuery.trim() && !tlActive) {
                 wrap.innerHTML = ''; wrap.style.display = 'none';
                 return;
             }
@@ -4267,6 +4331,7 @@
             activeFilters = {};
             searchQuery = '';
             moreFiltersOpen = false;
+            if (activeCategory === 'Conference' && tlBuilt) { tlSelStart = tlDefStart; tlSelEnd = tlDefEnd; updateTimeline(); }
             renderFacetBar();
             renderActiveChips();
             applyFilters();
@@ -4281,6 +4346,11 @@
                 const tv = r.tags[fk];
                 const vals = Array.isArray(tv) ? tv : (tv ? [tv] : []);
                 if (!vals.some(v => sel.has(v))) return false;
+            }
+            // Conference date-range window (year-round events always pass).
+            if (activeCategory === 'Conference' && tlBuilt) {
+                const d = confDates(r);
+                if (d && !(d.end >= tlSelStart && d.start <= tlSelEnd)) return false;
             }
             const q = searchQuery.trim().toLowerCase();
             if (q) {
@@ -4313,6 +4383,170 @@
             repositionMarkers();
         }
 
+        // ───────── Conference timeline range selector ─────────
+        // Replaces the old "Timeline" tag buttons with a draggable two-handle
+        // date window. Only conferences whose dates overlap the window are shown;
+        // year-round events always match. Default window: today → two years out
+        // (extended if a conference is scheduled further ahead). All bounds are
+        // derived from the data and from the real current date, so it stays
+        // correct over time.
+        const TL_DAY = 86400000;
+        let tlAxisMin, tlAxisMax, tlSelStart, tlSelEnd, tlDefStart, tlDefEnd;
+        let tlBuilt = false, tlDragging = null, tlFilterQueued = false;
+
+        function tlClamp(v, lo, hi) { return Math.min(Math.max(v, lo), hi); }
+        function tlAddYears(ts, n) { const d = new Date(ts); d.setFullYear(d.getFullYear() + n); return d.getTime(); }
+
+        // Parsed {start, end} ms for a conference, or null when it has no fixed
+        // date (year-round events, which always pass the filter).
+        function confDates(r) {
+            if (!r.date || r.date.yearRound || !r.date.start) return null;
+            const start = Date.parse(r.date.start + 'T00:00:00');
+            if (isNaN(start)) return null;
+            const end = Date.parse((r.date.end || r.date.start) + 'T23:59:59');
+            return { start, end: isNaN(end) ? start : end };
+        }
+
+        function initTimelineBounds() {
+            const dated = categoryEntries('Conference').map(confDates).filter(Boolean);
+            const now = Date.now();
+            const twoYears = tlAddYears(now, 2);
+            let earliest = now, latest = twoYears;
+            dated.forEach(d => { earliest = Math.min(earliest, d.start); latest = Math.max(latest, d.end); });
+            const pad = 30 * TL_DAY;
+            tlAxisMin = Math.min(earliest, now) - pad;
+            tlAxisMax = Math.max(latest, twoYears) + pad;
+            tlDefStart = tlSelStart = now;
+            tlDefEnd = tlSelEnd = Math.max(twoYears, latest);
+        }
+
+        function tlPct(ts) { return tlClamp((ts - tlAxisMin) / (tlAxisMax - tlAxisMin) * 100, 0, 100); }
+        function tlFmt(ts) { return new Date(ts).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }); }
+        function tlIsDefault() { return Math.abs(tlSelStart - tlDefStart) < TL_DAY && Math.abs(tlSelEnd - tlDefEnd) < TL_DAY; }
+
+        // Adaptive month/year axis labels (~7 across the track).
+        function tlTicks() {
+            const a = new Date(tlAxisMin), b = new Date(tlAxisMax);
+            const totalMonths = (b.getFullYear() - a.getFullYear()) * 12 + (b.getMonth() - a.getMonth());
+            const step = Math.max(1, Math.ceil(totalMonths / 7));
+            const ticks = [];
+            let d = new Date(a.getFullYear(), a.getMonth(), 1);
+            if (d.getTime() < tlAxisMin) d = new Date(d.getFullYear(), d.getMonth() + 1, 1);
+            while (d.getTime() <= tlAxisMax) {
+                ticks.push({ ts: d.getTime(), label: `${d.toLocaleString('en-US', { month: 'short' })} '${String(d.getFullYear()).slice(2)}` });
+                d = new Date(d.getFullYear(), d.getMonth() + step, 1);
+            }
+            return ticks;
+        }
+
+        function tlPosToTs(clientX, track) {
+            const rect = track.getBoundingClientRect();
+            const frac = tlClamp((clientX - rect.left) / rect.width, 0, 1);
+            return tlAxisMin + frac * (tlAxisMax - tlAxisMin);
+        }
+
+        function tlDragMove(clientX, track) {
+            const ts = tlPosToTs(clientX, track);
+            const minGap = 7 * TL_DAY;
+            if (tlDragging === 'start') tlSelStart = tlClamp(Math.min(ts, tlSelEnd - minGap), tlAxisMin, tlAxisMax);
+            else tlSelEnd = tlClamp(Math.max(ts, tlSelStart + minGap), tlAxisMin, tlAxisMax);
+            updateTimeline();
+            if (!tlFilterQueued) {
+                tlFilterQueued = true;
+                requestAnimationFrame(() => { tlFilterQueued = false; applyFilters(); renderActiveChips(); });
+            }
+        }
+
+        function buildTimeline() {
+            initTimelineBounds();
+            const w = document.getElementById('timelineWidget');
+            const events = categoryEntries('Conference').map(r => {
+                const d = confDates(r);
+                if (!d) return '';
+                return `<span class="tl-event" data-start="${d.start}" data-end="${d.end}" style="left:${tlPct(d.start)}%"></span>`;
+            }).join('');
+            const ticks = tlTicks().map(t => `<span class="tl-tick" style="left:${tlPct(t.ts)}%">${t.label}</span>`).join('');
+            w.innerHTML = `
+                <div class="tl-head">
+                    <span class="tl-label">Timeline</span>
+                    <span class="tl-range-text" id="tlRangeText"></span>
+                    <button type="button" class="tl-reset" id="tlReset">Reset</button>
+                </div>
+                <div class="tl-track-wrap">
+                    <div class="tl-track" id="tlTrack">
+                        ${events}
+                        <span class="tl-range-fill" id="tlFill"></span>
+                        <span class="tl-thumb" id="tlThumbStart" data-which="start"></span>
+                        <span class="tl-thumb" id="tlThumbEnd" data-which="end"></span>
+                    </div>
+                    <div class="tl-ticks">${ticks}</div>
+                </div>
+            `;
+            const track = document.getElementById('tlTrack');
+            w.querySelectorAll('.tl-thumb').forEach(th => {
+                th.addEventListener('pointerdown', e => {
+                    e.stopPropagation();
+                    tlDragging = th.dataset.which;
+                    try { th.setPointerCapture(e.pointerId); } catch (_) {}
+                });
+            });
+            // Click/drag anywhere on the track moves the nearer handle.
+            track.addEventListener('pointerdown', e => {
+                if (e.target.classList.contains('tl-thumb')) return;
+                const ts = tlPosToTs(e.clientX, track);
+                tlDragging = Math.abs(ts - tlSelStart) <= Math.abs(ts - tlSelEnd) ? 'start' : 'end';
+                tlDragMove(e.clientX, track);
+            });
+            document.getElementById('tlReset').addEventListener('click', resetTimeline);
+            tlBuilt = true;
+            updateTimeline();
+        }
+
+        function updateTimeline() {
+            if (!tlBuilt) return;
+            const a = tlPct(tlSelStart), b = tlPct(tlSelEnd);
+            const fill = document.getElementById('tlFill');
+            fill.style.left = a + '%';
+            fill.style.width = (b - a) + '%';
+            document.getElementById('tlThumbStart').style.left = a + '%';
+            document.getElementById('tlThumbEnd').style.left = b + '%';
+            document.getElementById('tlRangeText').textContent = `${tlFmt(tlSelStart)} — ${tlFmt(tlSelEnd)}`;
+            document.querySelectorAll('#timelineWidget .tl-event').forEach(ev => {
+                const s = +ev.dataset.start, e = +ev.dataset.end;
+                ev.classList.toggle('out', !(e >= tlSelStart && s <= tlSelEnd));
+            });
+        }
+
+        function resetTimeline() {
+            tlSelStart = tlDefStart;
+            tlSelEnd = tlDefEnd;
+            updateTimeline();
+            applyFilters();
+            renderActiveChips();
+        }
+
+        // Shows/builds the widget for the Conference category; hides it elsewhere.
+        function renderTimeline() {
+            const w = document.getElementById('timelineWidget');
+            if (activeCategory !== 'Conference') {
+                w.classList.remove('show');
+                w.innerHTML = '';
+                tlBuilt = false;
+                return;
+            }
+            w.classList.add('show');
+            buildTimeline();
+        }
+
+        // A single pair of window-level listeners drives whichever handle is active,
+        // so the drag continues even when the pointer leaves the handle.
+        window.addEventListener('pointermove', e => {
+            if (!tlDragging) return;
+            const track = document.getElementById('tlTrack');
+            if (track) tlDragMove(e.clientX, track);
+        });
+        window.addEventListener('pointerup', () => { tlDragging = null; });
+
         // Apply exactly one filter (used by clickable chips in the modal).
         function applySingleFilter(cat, facetKey, value) {
             closeModal();
@@ -4323,6 +4557,7 @@
             moreFiltersOpen = false;
             renderCategoryBar();
             renderFacetBar();
+            renderTimeline();
             renderActiveChips();
             applyFilters();
         }
@@ -4547,6 +4782,7 @@
         initResearcherList();
         renderCategoryBar();
         renderFacetBar();
+        renderTimeline();
         renderActiveChips();
         applyFilters();
     </script>
