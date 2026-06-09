@@ -44,7 +44,7 @@
         /* Header Section — minimal black / white / cyan */
         header {
             background: #000000;
-            padding: 0.85rem 2rem;
+            padding: 0.5rem 2rem;
             border-bottom: 1px solid #141414;
             position: relative;
         }
@@ -56,7 +56,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 60px;
+            min-height: 40px;
         }
 
         .header-brand {
@@ -66,7 +66,7 @@
         }
 
         .brand-word {
-            font-size: 1.5rem;
+            font-size: 1.15rem;
             font-weight: 500;
             color: #ffffff;
             letter-spacing: 0.22em;
@@ -74,7 +74,7 @@
         }
 
         .header-logo {
-            height: 52px;
+            height: 38px;
             width: auto;
             display: block;
             cursor: pointer;
@@ -89,7 +89,7 @@
         /* Filter Section — black background, cyan accents */
         .filters {
             background: #000000;
-            padding: 0.7rem 2rem 0.85rem;
+            padding: 0.45rem 2rem 0.5rem;
         }
 
         .filter-container {
@@ -104,11 +104,11 @@
 
 
         /* Category selector */
-        .category-bar { display: flex; gap: 0.45rem; width: 100%; margin-bottom: 0.55rem; flex-wrap: wrap; justify-content: center; }
+        .category-bar { display: flex; gap: 0.4rem; width: 100%; margin-bottom: 0.4rem; flex-wrap: wrap; justify-content: center; }
         .category-btn {
             background: transparent; color: #5a5a5a; border: 1px solid #1f1f1f;
-            padding: 0.4rem 1rem; border-radius: 9999px; cursor: pointer;
-            font-size: 0.74rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase;
+            padding: 0.3rem 0.85rem; border-radius: 9999px; cursor: pointer;
+            font-size: 0.68rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase;
             transition: color 0.18s, border-color 0.18s, background 0.18s;
             font-family: inherit;
         }
@@ -117,19 +117,19 @@
         .category-btn[disabled] { opacity: 0.2; cursor: not-allowed; }
 
         /* Facet bar — flat chip layout, grouped per facet */
-        .facet-bar { display: flex; flex-direction: column; gap: 0.4rem; align-items: stretch; width: 100%; }
+        .facet-bar { display: flex; flex-direction: column; gap: 0.3rem; align-items: stretch; width: 100%; }
         .facet-group {
             display: flex; flex-wrap: wrap; align-items: center;
-            gap: 0.35rem; justify-content: center;
+            gap: 0.3rem; justify-content: center;
         }
         .facet-group-label {
-            color: #5a5a5a; font-size: 0.6rem; font-weight: 600;
+            color: #5a5a5a; font-size: 0.58rem; font-weight: 600;
             letter-spacing: 0.18em; text-transform: uppercase; margin-right: 0.15rem;
         }
         .facet-value {
             background: transparent; color: #6b6b6b; border: 1px solid #1f1f1f;
-            padding: 0.26rem 0.7rem; border-radius: 9999px; cursor: pointer;
-            font-size: 0.7rem; font-weight: 500; letter-spacing: 0.03em;
+            padding: 0.2rem 0.6rem; border-radius: 9999px; cursor: pointer;
+            font-size: 0.66rem; font-weight: 500; letter-spacing: 0.03em;
             font-family: inherit;
             transition: color 0.15s, border-color 0.15s, background 0.15s;
         }
@@ -634,11 +634,11 @@
                 border-left: none; border-right: none; border-top: none;
                 box-shadow: 0 6px 18px -8px rgba(0, 0, 0, 0.7);
             }
-            header { padding: 0.6rem 1rem; }
-            .filters { padding: 0.5rem 1rem 0.6rem; }
-            .brand-word { font-size: 1.1rem; }
-            .header-brand { gap: 0.55rem; }
-            .header-logo { height: 40px; }
+            header { padding: 0.4rem 1rem; }
+            .filters { padding: 0.4rem 1rem 0.45rem; }
+            .brand-word { font-size: 0.95rem; }
+            .header-brand { gap: 0.45rem; }
+            .header-logo { height: 30px; }
             .stats { display: none; }
             #map { width: 100%; } /* height set by applyMobileMapHeight() in JS */
             .lab-list { display: block; margin-top: 1rem; }
@@ -3884,7 +3884,11 @@
         const NORTH_LAT = 85.05;
         const SOUTH_LAT = -60;
         // MapLibre maxBounds use [[west, south], [east, north]] (lng, lat order).
-        const WORLD_BOUNDS = [[-180, SOUTH_LAT], [180, NORTH_LAT]];
+        // Longitude is inset a hair from ±180: at exactly ±180 the west and east
+        // edges are the same wrapped meridian, so MapLibre reads the bounds as
+        // zero-width and snaps to max zoom in a corner (blank map). ±179.9 keeps
+        // effectively the whole world while giving the bounds a real width.
+        const WORLD_BOUNDS = [[-179.9, SOUTH_LAT], [179.9, NORTH_LAT]];
 
         // Web Mercator y position of a latitude, normalized to [0, 1] over the
         // full ±85.05° world. Used to size the cropped bounds in tile pixels.
