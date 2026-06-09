@@ -181,8 +181,8 @@
         .tl-reset:hover { color: #ffffff; border-color: #22d3ee; }
         .tl-track-wrap { position: relative; padding: 0 10px; max-width: 720px; margin: 0 auto; }
         .tl-track {
-            position: relative; height: 6px; background: #1a1a1a;
-            border-radius: 9999px; margin: 20px 0 8px; cursor: pointer;
+            position: relative; height: 3px; background: #1a1a1a;
+            border-radius: 9999px; margin: 15px 0 7px; cursor: pointer;
             touch-action: none;
         }
         .tl-range-fill {
@@ -190,16 +190,16 @@
             background: #22d3ee; border-radius: 9999px; pointer-events: none;
         }
         .tl-event {
-            position: absolute; top: 50%; width: 7px; height: 7px;
-            margin-left: -3.5px; transform: translateY(-50%) rotate(45deg);
+            position: absolute; top: 50%; width: 6px; height: 6px;
+            margin-left: -3px; transform: translateY(-50%) rotate(45deg);
             background: #38bdf8; border-radius: 1px; pointer-events: none; z-index: 1;
             box-shadow: 0 0 4px rgba(56, 189, 248, 0.6);
             transition: background 0.15s, opacity 0.15s, box-shadow 0.15s;
         }
         .tl-event.out { background: #3a3a3a; box-shadow: none; opacity: 0.55; }
         .tl-thumb {
-            position: absolute; top: 50%; width: 16px; height: 16px;
-            margin-left: -8px; transform: translateY(-50%);
+            position: absolute; top: 50%; width: 13px; height: 13px;
+            margin-left: -6.5px; transform: translateY(-50%);
             background: #000000; border: 2px solid #22d3ee; border-radius: 50%;
             cursor: grab; touch-action: none; z-index: 3;
             box-shadow: 0 0 6px rgba(34, 211, 238, 0.5);
@@ -210,12 +210,15 @@
         .tl-ticks { position: relative; height: 13px; }
         .tl-tick {
             position: absolute; transform: translateX(-50%);
-            color: #5a5a5a; font-size: 0.56rem; letter-spacing: 0.02em; white-space: nowrap;
+            color: #555555; font-size: 0.54rem; letter-spacing: 0.02em; white-space: nowrap;
         }
         .tl-tick::before {
-            content: ''; position: absolute; top: -7px; left: 50%;
-            width: 1px; height: 4px; background: #2a2a2a;
+            content: ''; position: absolute; top: -6px; left: 50%;
+            width: 1px; height: 3px; background: #2a2a2a;
         }
+        /* Year markers stand out from the mid-year (June) markers. */
+        .tl-tick-major { color: #8a8a8a; font-weight: 600; letter-spacing: 0.04em; }
+        .tl-tick-major::before { height: 5px; top: -8px; background: #3a3a3a; }
 
         /* Modal grouped chips */
         .facet-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; margin-bottom: 0.5rem; }
@@ -4020,6 +4023,23 @@
         // Flat, north-up map only — disable touch/gesture rotation and tilt.
         map.touchZoomRotate.disableRotation();
 
+        // Recolour the base style: land dark grey, sea black. The CARTO
+        // dark-matter style paints land via its "background" layer and the oceans
+        // via water fill/line layers, so we override those once the style loads.
+        map.on('load', () => {
+            const LAND = '#2d2d2d';
+            const SEA = '#000000';
+            (map.getStyle().layers || []).forEach(l => {
+                const id = l.id.toLowerCase();
+                if (l.type === 'background') {
+                    map.setPaintProperty(l.id, 'background-color', LAND);
+                } else if (id.includes('water') || id.includes('ocean') || id.includes('sea')) {
+                    if (l.type === 'fill') map.setPaintProperty(l.id, 'fill-color', SEA);
+                    else if (l.type === 'line') map.setPaintProperty(l.id, 'line-color', SEA);
+                }
+            });
+        });
+
         // Re-lock the minimum zoom on resize so the world keeps filling the viewport
         window.addEventListener('resize', () => {
             applyMobileMapHeight();
@@ -4414,7 +4434,10 @@
             let earliest = now, latest = twoYears;
             dated.forEach(d => { earliest = Math.min(earliest, d.start); latest = Math.max(latest, d.end); });
             const pad = 30 * TL_DAY;
-            tlAxisMin = Math.min(earliest, now) - pad;
+            // Always keep at least a year of past room so users can drag back to
+            // see prior events (the default selection still starts at today).
+            const oneYearAgo = tlAddYears(now, -1);
+            tlAxisMin = Math.min(earliest, oneYearAgo) - pad;
             tlAxisMax = Math.max(latest, twoYears) + pad;
             tlDefStart = tlSelStart = now;
             tlDefEnd = tlSelEnd = Math.max(twoYears, latest);
@@ -4424,17 +4447,17 @@
         function tlFmt(ts) { return new Date(ts).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }); }
         function tlIsDefault() { return Math.abs(tlSelStart - tlDefStart) < TL_DAY && Math.abs(tlSelEnd - tlDefEnd) < TL_DAY; }
 
-        // Adaptive month/year axis labels (~7 across the track).
+        // Axis labels: each year boundary (major) plus the June midpoint of that
+        // year (minor), within the axis range.
         function tlTicks() {
-            const a = new Date(tlAxisMin), b = new Date(tlAxisMax);
-            const totalMonths = (b.getFullYear() - a.getFullYear()) * 12 + (b.getMonth() - a.getMonth());
-            const step = Math.max(1, Math.ceil(totalMonths / 7));
             const ticks = [];
-            let d = new Date(a.getFullYear(), a.getMonth(), 1);
-            if (d.getTime() < tlAxisMin) d = new Date(d.getFullYear(), d.getMonth() + 1, 1);
-            while (d.getTime() <= tlAxisMax) {
-                ticks.push({ ts: d.getTime(), label: `${d.toLocaleString('en-US', { month: 'short' })} '${String(d.getFullYear()).slice(2)}` });
-                d = new Date(d.getFullYear(), d.getMonth() + step, 1);
+            const y0 = new Date(tlAxisMin).getFullYear();
+            const y1 = new Date(tlAxisMax).getFullYear();
+            for (let y = y0; y <= y1; y++) {
+                const jan = new Date(y, 0, 1).getTime();
+                const jun = new Date(y, 5, 1).getTime();
+                if (jan >= tlAxisMin && jan <= tlAxisMax) ticks.push({ ts: jan, label: String(y), major: true });
+                if (jun >= tlAxisMin && jun <= tlAxisMax) ticks.push({ ts: jun, label: 'Jun', major: false });
             }
             return ticks;
         }
@@ -4465,7 +4488,7 @@
                 if (!d) return '';
                 return `<span class="tl-event" data-start="${d.start}" data-end="${d.end}" style="left:${tlPct(d.start)}%"></span>`;
             }).join('');
-            const ticks = tlTicks().map(t => `<span class="tl-tick" style="left:${tlPct(t.ts)}%">${t.label}</span>`).join('');
+            const ticks = tlTicks().map(t => `<span class="tl-tick${t.major ? ' tl-tick-major' : ''}" style="left:${tlPct(t.ts)}%">${t.label}</span>`).join('');
             w.innerHTML = `
                 <div class="tl-head">
                     <span class="tl-label">Timeline</span>
