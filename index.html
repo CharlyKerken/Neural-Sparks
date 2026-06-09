@@ -380,6 +380,11 @@
             height: 26px;
             cursor: pointer;
             filter: drop-shadow(0 0 4px rgba(56, 189, 248, 0.6));
+            /* Baseline stacking. Active/closed stars shift within 1–999 (see
+               initMarkers) so they always stay below the top bar (1000) and the
+               detail modal (2000), and never go negative (which would hide them
+               behind the map canvas). */
+            z-index: 500;
         }
 
         .custom-marker svg {
@@ -4011,11 +4016,15 @@
 
         map.on('zoomend', repositionMarkers);
 
-        // After a star's popup closes, sink it below its cluster neighbours so the
-        // most-recently-opened star is always easiest to click past. MapLibre has
-        // no marker z-index API, so we drive the element's z-index directly (wired
-        // up per-marker in initMarkers via each popup's "close" event).
-        let demoteSeq = 0;
+        // Marker stacking. MapLibre has no marker z-index API, so we drive the
+        // element's z-index directly (wired up per-marker in initMarkers). All
+        // values stay within 1–999: above the map but always below the top bar
+        // (1000) and the detail modal (2000), and never negative — a negative
+        // z-index would hide the star behind the map canvas.
+        //   baseline (CSS): 500
+        //   active (popup open): 600–999 so it sits above its neighbours
+        //   recently closed: 1–499 so cluster neighbours become easy to click past
+        let raiseSeq = 0, sinkSeq = 0;
 
         // Store markers for filtering
         const markers = {};
@@ -4106,9 +4115,11 @@
 
                 marker.setPopup(popup);
                 // Raise the active marker; sink it again once its popup closes so
-                // the most-recently-opened star is easiest to click past.
-                el.addEventListener('click', () => { el.style.zIndex = '10000'; });
-                popup.on('close', () => { el.style.zIndex = String(--demoteSeq); });
+                // the most-recently-opened star is easiest to click past. Values are
+                // kept positive and below the modal so the star never vanishes
+                // behind the canvas nor paints over the detail window.
+                el.addEventListener('click', () => { el.style.zIndex = String(600 + (raiseSeq++ % 400)); });
+                popup.on('close', () => { el.style.zIndex = String(499 - (sinkSeq++ % 499)); });
 
                 markers[researcher.id] = marker;
             });
