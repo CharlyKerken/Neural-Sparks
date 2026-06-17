@@ -2301,8 +2301,14 @@
             // ───────── Funding programmes ─────────
             // Timelines tagged as of 2026-05-23. Specific cycle dates change year
             // to year; always confirm on the official programme page before applying.
+            // Each entry carries a `date` driving the Funding timeline window:
+            //   { start, end }   → next open→deadline application window (ISO dates)
+            //   { rolling: true } → continuously open (always available now)
+            //   { tbd: true }     → no scheduled call (periodic/ad-hoc) — always shown
+            // start/end are estimates of the *next upcoming* cycle anchored to mid-2026.
             {
                 id: 66,
+                date: { rolling: true },
                 name: "NIH BRAIN Initiative (U01, UH3/UH4, R61/R32)",
                 photo: "",
                 institution: "U.S. National Institutes of Health",
@@ -2331,6 +2337,7 @@
             },
             {
                 id: 67,
+                date: { start: "2026-08-01", end: "2026-10-20" },
                 name: "NSF Graduate Research Fellowship Program (GRFP)",
                 photo: "",
                 institution: "U.S. National Science Foundation",
@@ -2359,6 +2366,7 @@
             },
             {
                 id: 68,
+                date: { start: "2026-07-01", end: "2026-10-08" },
                 name: "ERC Starting Grant",
                 photo: "",
                 institution: "European Research Council",
@@ -2387,6 +2395,7 @@
             },
             {
                 id: 69,
+                date: { start: "2026-04-15", end: "2026-09-15" },
                 name: "MSCA Postdoctoral Fellowships",
                 photo: "",
                 institution: "European Commission — Marie Skłodowska-Curie Actions",
@@ -2415,6 +2424,7 @@
             },
             {
                 id: 70,
+                date: { tbd: true },
                 name: "HHMI Investigator Program",
                 photo: "",
                 institution: "Howard Hughes Medical Institute",
@@ -2443,6 +2453,7 @@
             },
             {
                 id: 71,
+                date: { rolling: true },
                 name: "DARPA Biological Technologies Office (BTO)",
                 photo: "",
                 institution: "U.S. Defense Advanced Research Projects Agency",
@@ -2471,6 +2482,7 @@
             },
             {
                 id: 72,
+                date: { rolling: true },
                 name: "Y Combinator",
                 photo: "",
                 institution: "Y Combinator",
@@ -2499,6 +2511,7 @@
             },
             {
                 id: 73,
+                date: { rolling: true },
                 name: "Wellcome Discovery Awards",
                 photo: "",
                 institution: "Wellcome Trust",
@@ -2527,6 +2540,7 @@
             },
             {
                 id: 74,
+                date: { start: "2026-07-01", end: "2026-10-21" },
                 name: "EIC Pathfinder & Transition (Horizon Europe)",
                 photo: "",
                 institution: "European Innovation Council",
@@ -2555,6 +2569,7 @@
             },
             {
                 id: 75,
+                date: { start: "2027-01-15", end: "2027-03-31" },
                 name: "ERA-NET NEURON",
                 photo: "",
                 institution: "European multinational consortium (coordinated via Project Management Jülich)",
@@ -2583,6 +2598,7 @@
             },
             {
                 id: 76,
+                date: { rolling: true },
                 name: "Wyss Center for Bio and Neuroengineering",
                 photo: "",
                 institution: "Wyss Center (Campus Biotech)",
@@ -2611,6 +2627,7 @@
             },
             {
                 id: 77,
+                date: { start: "2027-04-01", end: "2027-05-15" },
                 name: "Craig H. Neilsen Foundation",
                 photo: "",
                 institution: "Craig H. Neilsen Foundation",
@@ -2639,6 +2656,7 @@
             },
             {
                 id: 78,
+                date: { tbd: true },
                 name: "Wellcome Leap",
                 photo: "",
                 institution: "Wellcome Leap (Wellcome Trust)",
@@ -2667,6 +2685,7 @@
             },
             {
                 id: 79,
+                date: { tbd: true },
                 name: "NeuroTech Harbor (NIH Blueprint MedTech Incubator Hub)",
                 photo: "",
                 institution: "Johns Hopkins University / NIH Blueprint MedTech",
@@ -2695,6 +2714,7 @@
             },
             {
                 id: 80,
+                date: { rolling: true },
                 name: "Venture Kick",
                 photo: "",
                 institution: "Venture Kick (Venturelab)",
@@ -2723,6 +2743,7 @@
             },
             {
                 id: 81,
+                date: { rolling: true },
                 name: "Innosuisse (Swiss Innovation Agency)",
                 photo: "",
                 institution: "Innosuisse — Swiss Innovation Agency",
@@ -2751,6 +2772,7 @@
             },
             {
                 id: 82,
+                date: { start: "2026-09-01", end: "2026-10-31" },
                 name: "ESA BIC Switzerland",
                 photo: "",
                 institution: "European Space Agency Business Incubation Centre — Switzerland",
@@ -2779,6 +2801,7 @@
             },
             {
                 id: 83,
+                date: { start: "2027-02-01", end: "2027-05-15" },
                 name: "NWO KIC Long-Term Programmes",
                 photo: "",
                 institution: "Dutch Research Council (NWO)",
@@ -2807,6 +2830,7 @@
             },
             {
                 id: 84,
+                date: { start: "2026-06-01", end: "2026-09-15" },
                 name: "Oncode Institute / Health~Holland (Top Sector LSH)",
                 photo: "",
                 institution: "Health~Holland — Top Sector Life Sciences & Health",
@@ -2835,6 +2859,7 @@
             },
             {
                 id: 85,
+                date: { rolling: true },
                 name: "NeuroXTek — Swedish Neurotechnology Alliance",
                 photo: "",
                 institution: "NeuroXTek (national cluster, Sweden)",
@@ -2863,6 +2888,7 @@
             },
             {
                 id: 86,
+                date: { start: "2027-02-15", end: "2027-03-31" },
                 name: "Vetenskapsrådet (Swedish Research Council)",
                 photo: "",
                 institution: "Swedish Research Council",
@@ -2891,6 +2917,7 @@
             },
             {
                 id: 127,
+                date: { start: "2026-06-01", end: "2026-09-01" },
                 name: "The Annual BCI Award",
                 photo: "",
                 institution: "g.tec medical engineering GmbH",
@@ -4358,7 +4385,7 @@
         function renderActiveChips() {
             const wrap = document.getElementById('activeChips');
             const hasFilters = Object.keys(activeFilters).some(fk => activeFilters[fk] && activeFilters[fk].size > 0);
-            const tlActive = activeCategory === 'Conference' && tlBuilt && !tlIsDefault();
+            const tlActive = TIMELINE_CATEGORIES.has(activeCategory) && tlBuilt && !tlIsDefault();
             if (!hasFilters && !searchQuery.trim() && !tlActive) {
                 wrap.innerHTML = ''; wrap.style.display = 'none';
                 return;
@@ -4372,7 +4399,7 @@
             activeFilters = {};
             searchQuery = '';
             moreFiltersOpen = false;
-            if (activeCategory === 'Conference' && tlBuilt) { tlSelStart = tlDefStart; tlSelEnd = tlDefEnd; updateTimeline(); }
+            if (TIMELINE_CATEGORIES.has(activeCategory) && tlBuilt) { tlSelStart = tlDefStart; tlSelEnd = tlDefEnd; updateTimeline(); }
             renderFacetBar();
             renderActiveChips();
             applyFilters();
@@ -4388,9 +4415,10 @@
                 const vals = Array.isArray(tv) ? tv : (tv ? [tv] : []);
                 if (!vals.some(v => sel.has(v))) return false;
             }
-            // Conference date-range window (year-round events always pass).
-            if (activeCategory === 'Conference' && tlBuilt) {
-                const d = confDates(r);
+            // Date-range window (Conference event dates / Funding open windows).
+            // Year-round, rolling, and TBD entries always pass.
+            if (TIMELINE_CATEGORIES.has(activeCategory) && tlBuilt) {
+                const d = entryDates(r);
                 if (d && !(d.end >= tlSelStart && d.start <= tlSelEnd)) return false;
             }
             const q = searchQuery.trim().toLowerCase();
@@ -4424,13 +4452,18 @@
             repositionMarkers();
         }
 
-        // ───────── Conference timeline range selector ─────────
-        // Replaces the old "Timeline" tag buttons with a draggable two-handle
-        // date window. Only conferences whose dates overlap the window are shown;
-        // year-round events always match. Default window: today → two years out
-        // (extended if a conference is scheduled further ahead). All bounds are
-        // derived from the data and from the real current date, so it stays
-        // correct over time.
+        // ───────── Timeline range selector (Conference + Funding) ─────────
+        // A draggable two-handle date window. Only entries whose window overlaps
+        // the selection are shown — conference event dates, or a funding
+        // programme's next open→deadline window. Year-round / rolling / TBD
+        // entries always match (and draw no marker). Default window: today → two
+        // years out (extended if an entry is scheduled further ahead). All bounds
+        // are derived from the data and the real current date, so it stays correct
+        // over time. Active category is read live via `activeCategory`.
+        // Categories that get the draggable date-window selector. Conferences
+        // filter by event dates; Funding filters by each programme's next
+        // open→deadline application window (see the `date` field on entries).
+        const TIMELINE_CATEGORIES = new Set(['Conference', 'Funding']);
         const TL_DAY = 86400000;
         let tlAxisMin, tlAxisMax, tlSelStart, tlSelEnd, tlDefStart, tlDefEnd;
         let tlBuilt = false, tlDragging = null, tlFilterQueued = false;
@@ -4438,9 +4471,11 @@
         function tlClamp(v, lo, hi) { return Math.min(Math.max(v, lo), hi); }
         function tlAddYears(ts, n) { const d = new Date(ts); d.setFullYear(d.getFullYear() + n); return d.getTime(); }
 
-        // Parsed {start, end} ms for a conference, or null when it has no fixed
-        // date (year-round events, which always pass the filter).
-        function confDates(r) {
+        // Parsed {start, end} ms for an entry's window (conference dates, or a
+        // funding programme's next open→deadline window), or null when it has no
+        // fixed date — year-round / rolling / TBD entries, which always pass the
+        // filter and draw no marker on the track.
+        function entryDates(r) {
             if (!r.date || r.date.yearRound || !r.date.start) return null;
             const start = Date.parse(r.date.start + 'T00:00:00');
             if (isNaN(start)) return null;
@@ -4449,7 +4484,7 @@
         }
 
         function initTimelineBounds() {
-            const dated = categoryEntries('Conference').map(confDates).filter(Boolean);
+            const dated = categoryEntries(activeCategory).map(entryDates).filter(Boolean);
             const now = Date.now();
             const twoYears = tlAddYears(now, 2);
             let earliest = now, latest = twoYears;
@@ -4504,15 +4539,16 @@
         function buildTimeline() {
             initTimelineBounds();
             const w = document.getElementById('timelineWidget');
-            const events = categoryEntries('Conference').map(r => {
-                const d = confDates(r);
+            const events = categoryEntries(activeCategory).map(r => {
+                const d = entryDates(r);
                 if (!d) return '';
                 return `<span class="tl-event" data-start="${d.start}" data-end="${d.end}" style="left:${tlPct(d.start)}%"></span>`;
             }).join('');
             const ticks = tlTicks().map(t => `<span class="tl-tick${t.major ? ' tl-tick-major' : ''}" style="left:${tlPct(t.ts)}%">${t.label}</span>`).join('');
+            const tlLabel = activeCategory === 'Funding' ? 'Open window' : 'Timeline';
             w.innerHTML = `
                 <div class="tl-head">
-                    <span class="tl-label">Timeline</span>
+                    <span class="tl-label">${tlLabel}</span>
                     <span class="tl-range-text" id="tlRangeText"></span>
                     <button type="button" class="tl-reset" id="tlReset">Reset</button>
                 </div>
@@ -4572,7 +4608,7 @@
         // Shows/builds the widget for the Conference category; hides it elsewhere.
         function renderTimeline() {
             const w = document.getElementById('timelineWidget');
-            if (activeCategory !== 'Conference') {
+            if (!TIMELINE_CATEGORIES.has(activeCategory)) {
                 w.classList.remove('show');
                 w.innerHTML = '';
                 tlBuilt = false;
